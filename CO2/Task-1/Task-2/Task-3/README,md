@@ -1,0 +1,99 @@
+1. Aim
+To implement Brute-Force String Matching and investigate how text and pattern structure affects the number of character comparisons when searching cybersecurity logs for known event signatures.
+2. Algorithm
+Brute-Force String Matching checks the pattern at every possible position in the text. If a character does not match, it shifts the pattern one position to the right and starts again.
+
+Prediction: The number of comparisons depends not only on the text length and pattern length but also on how many characters match before a mismatch occurs.
+3. Three Designed Test Conditions
+Test	Text	Pattern	Predicted behaviour
+1. Easy match	XYZABC	ABC	Few comparisons because the pattern matches near the end
+2. Repeated characters	AAAAAAAAAA	AAAAB	Many comparisons because four characters match before each mismatch
+3. Immediate mismatch	BBBBBBBBBB	AAA	Few comparisons because the first character mismatches at every position
+
+4. Python Implementation
+
+def brute_force_search(text, pattern):
+    comparisons = 0
+    n = len(text)
+    m = len(pattern)
+
+    for i in range(n - m + 1):
+        j = 0
+
+        while j < m:
+            comparisons += 1
+
+            if text[i + j] != pattern[j]:
+                break
+
+            j += 1
+
+        if j == m:
+            return i, comparisons
+
+    return -1, comparisons
+
+
+# Test 1: Easy match
+text1 = "XYZABC"
+pattern1 = "ABC"
+
+# Test 2: Repeated characters
+text2 = "AAAAAAAAAA"
+pattern2 = "AAAAB"
+
+# Test 3: Immediate mismatch
+text3 = "BBBBBBBBBB"
+pattern3 = "AAA"
+
+tests = [
+    ("Test 1", text1, pattern1),
+    ("Test 2", text2, pattern2),
+    ("Test 3", text3, pattern3)
+]
+
+for name, text, pattern in tests:
+    position, comparisons = brute_force_search(text, pattern)
+
+    print(name)
+    print("Position:", position)
+    print("Character comparisons:", comparisons)
+    print()
+Test 1
+Position: 3
+Character comparisons: 6
+
+Test 2
+Position: -1
+Character comparisons: 30
+
+Test 3
+Position: -1
+Character comparisons: 8
+Here, position 3 means the pattern starts at the fourth character because Python indexing begins at zero. Position -1 means the pattern was not found.
+6. Prediction vs Experimental Result
+Test	Prediction	Actual comparisons	Result
+Test 1	Low	6	Prediction matched
+Test 2	High	30	Prediction matched
+Test 3	Low	8	Prediction matched
+
+7. Analysis
+Why does Test 2 require more work?
+- The text contains repeated A characters.
+- The pattern AAAAB matches four characters before failing on B.
+- The algorithm repeats these four successful comparisons at each possible position.
+- Therefore, it performs 30 comparisons, compared with only 8 in Test 3.
+Why does Test 3 require less work?
+- The text contains only B characters, while the pattern begins with A.
+- The first character mismatches at every position.
+- The algorithm stops checking the pattern immediately at each position.
+What does this reveal about input size?
+
+Two searches with similar text lengths can require very different numbers of comparisons. The arrangement of repeated characters and matching prefixes influences the computational effort, so input size alone cannot predict the exact work performed.
+8. Time Complexity
+Let \(n\) be the text length and \(m\) be the pattern length.
+- Best case: \(O(m)\), when the pattern matches at the first position.
+- Worst case: \(O((n-m+1)m)\), or \(O(nm)\), when many characters match before mismatches occur at repeated positions.
+- Space complexity: \(O(1)\) auxiliary space.
+9. Conclusion
+Brute-Force String Matching is simple to implement, but its performance depends on both input size and character arrangement. Repeated prefixes can cause many unnecessary comparisons. For large cybersecurity logs, algorithms such as Knuth–Morris–Pratt (KMP) can reduce repeated checking and improve search efficiency.
