@@ -1,0 +1,30 @@
+answer. The decision process must be visible.
+
+Stage 5 – Desk-Check (1 Mark)
+To manually execute the MaximumEnergySaving algorithm, I need the eight-job dataset from your problem statement.
+
+Please provide the eight jobs with their:
+
+Job ID
+
+Start time
+
+Finish time
+
+Energy-saving value
+
+You can paste the dataset or upload a photo of the question.
+
+I will then prepare the complete desk-check showing:
+
+Jobs sorted by finishing time.
+
+Compatibility values for all eight jobs.
+
+DP states and include/exclude decisions.
+
+State updates at each step.
+
+Backtracking and selected jobs.
+
+Final maximum energy-saving value
