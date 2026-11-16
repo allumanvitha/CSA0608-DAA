@@ -1,0 +1,498 @@
+Task 2.1 – Model the Requirement (2 Marks)
+Before designing the algorithm, the business requirement must be converted into a clear computational problem.
+
+Element
+
+Description
+
+Input
+
+Number of jobs, job IDs, deadlines and profits of each job.
+
+Output
+
+Final job schedule and maximum total profit.
+
+Objective
+
+Maximise the total profit earned by completing jobs within their deadlines.
+
+Constraints
+
+Each job requires exactly one processing slot. Only one job can occupy a slot. A job must be completed on or before its deadline. Each job can be scheduled only once.
+
+Decision to be made
+
+Which jobs should be selected and which available time slots should be assigned to them?
+
+Information required for scheduling
+
+Job ID, deadline, profit, available time slots and the current schedule.
+
+Important observation: A job with deadline 
+d
+d can be scheduled in any free slot from 1 to 
+d
+d.
+
+Task 2.2 – Formulate a Greedy Hypothesis (1 Mark)
+Greedy-choice rule:
+
+Select the jobs in descending order of profit and assign each selected job to the latest available time slot on or before its deadline.
+
+Justification:
+
+This strategy prioritises jobs offering higher profits while placing them as late as possible within their deadlines. This preserves earlier slots for jobs with tighter deadlines, helping maximise the total profit.
+
+Task 2.3 – Design the Algorithm (3 Marks)
+Algorithm: JobSequencing
+
+Objective: Maximise total profit by scheduling jobs within their deadlines.
+
+Pseudocode
+
+text
+ALGORITHM JobSequencing
+
+BEGIN
+
+    READ N
+
+    FOR i ← 1 TO N DO
+        READ JobID[i]
+        READ Deadline[i]
+        READ Profit[i]
+    END FOR
+
+    MaxDeadline ← maximum value in Deadline
+
+    FOR i ← 1 TO MaxDeadline DO
+        Schedule[i] ← EMPTY
+    END FOR
+
+    TotalProfit ← 0
+
+    SORT jobs in descending order of Profit
+
+    FOR i ← 1 TO N DO
+
+        FOR Slot ← MIN(Deadline[i], MaxDeadline)
+                    DOWNTO 1 DO
+
+            IF Schedule[Slot] = EMPTY THEN
+
+                Schedule[Slot] ← JobID[i]
+
+                TotalProfit ← TotalProfit + Profit[i]
+
+                EXIT FOR
+
+            END IF
+
+        END FOR
+
+    END FOR
+
+    WRITE "Final Schedule"
+
+    FOR Slot ← 1 TO MaxDeadline DO
+        WRITE Slot, Schedule[Slot]
+    END FOR
+
+    WRITE "Total Profit:", TotalProfit
+
+    RETURN Schedule, TotalProfit
+
+END ALGORITHM
+Explanation of the Algorithm
+Read the job details, including job ID, deadline and profit.
+
+Find the maximum deadline to determine the number of possible slots.
+
+Initially mark all time slots as empty.
+
+Sort the jobs in descending order of profit.
+
+Select the highest-profit job first.
+
+Check the available slots from its deadline backwards towards slot 1.
+
+If a free slot is found, assign the job to that slot.
+
+Add its profit to the total profit.
+
+If no suitable slot is available, reject that job.
+
+Display the final schedule and total profit.
+
+Task 2.4 – Desk-Check (1 Mark)
+Given Input
+Job
+
+Deadline
+
+Profit
+
+A
+
+2
+
+80
+
+B
+
+1
+
+35
+
+C
+
+2
+
+60
+
+D
+
+3
+
+40
+
+E
+
+1
+
+25
+
+Maximum deadline = 3.
+
+Therefore, there are three available processing slots.
+
+Step 1: Sort jobs in descending order of profit.
+
+Priority
+
+Job
+
+Deadline
+
+Profit
+
+1
+
+A
+
+2
+
+80
+
+2
+
+C
+
+2
+
+60
+
+3
+
+D
+
+3
+
+40
+
+4
+
+B
+
+1
+
+35
+
+5
+
+E
+
+1
+
+25
+
+Step 2: Trace the scheduling decisions.
+
+Step
+
+Job
+
+Slot checked
+
+Decision
+
+Schedule after decision
+
+Total profit
+
+Initial
+
+—
+
+—
+
+All slots empty
+
+[-, -, -]
+
+0
+
+1
+
+A
+
+2
+
+Assigned to slot 2
+
+[-, A, -]
+
+80
+
+2
+
+C
+
+2, 1
+
+Slot 2 occupied; assigned to slot 1
+
+[C, A, -]
+
+140
+
+3
+
+D
+
+3
+
+Assigned to slot 3
+
+[C, A, D]
+
+180
+
+4
+
+B
+
+1
+
+Slot 1 occupied; rejected
+
+[C, A, D]
+
+180
+
+5
+
+E
+
+1
+
+Slot 1 occupied; rejected
+
+[C, A, D]
+
+180
+
+Final Schedule
+
+180
+Maximum Total Profit
+
+C
+Slot 1
+A
+Slot 2
+D
+Slot 3
+Selected jobs: A, C and D.
+
+Rejected jobs: B and E.
+
+Total profit = 80 + 60 + 40 = 180.
+
+Task 2.5 – Challenge Your Design (1 Mark)
+Modified Input
+Change only the profit of Job D from 40 to 90.
+
+Job
+
+Deadline
+
+Original Profit
+
+Modified Profit
+
+A
+
+2
+
+80
+
+80
+
+B
+
+1
+
+35
+
+35
+
+C
+
+2
+
+60
+
+60
+
+D
+
+3
+
+40
+
+90
+
+E
+
+1
+
+25
+
+25
+
+1. Prediction
+
+The schedule will change because Job D will become the highest-profit job and will be selected first instead of Job A.
+
+2. Expected affected decision
+
+The first greedy selection changes from Job A to Job D because its modified profit is now 90.
+
+3. Trace the relevant decisions
+
+New descending profit order:
+
+D (90) → A (80) → C (60) → B (35) → E (25).
+
+Step
+
+Job
+
+Slot checked
+
+Decision
+
+Schedule
+
+Total profit
+
+Initial
+
+—
+
+—
+
+All slots empty
+
+[-, -, -]
+
+0
+
+1
+
+D
+
+3
+
+Assigned to slot 3
+
+[-, -, D]
+
+90
+
+2
+
+A
+
+2
+
+Assigned to slot 2
+
+[-, A, D]
+
+170
+
+3
+
+C
+
+2, 1
+
+Slot 2 occupied; assigned to slot 1
+
+[C, A, D]
+
+230
+
+4
+
+B
+
+1
+
+No free slot; rejected
+
+[C, A, D]
+
+230
+
+5
+
+E
+
+1
+
+No free slot; rejected
+
+[C, A, D]
+
+230
+
+Modified Final Schedule
+
+230
+New Maximum Total Profit
+
+C
+
+Slot 1
+A
+
+Slot 2
+D
+
+Slot 3
+4. Prediction Verification
+
+The prediction was partially correct. The first selection changed from Job A to Job D, but the final schedule remained the same because Job D was assigned to slot 3, while Jobs A and C occupied slots 2 and 1 respectively.
+
+The total profit increased from 180 to 230.
+
+Conclusion
+The Job Sequencing with Deadlines algorithm uses a greedy strategy by selecting jobs in descending order of profit and placing each job in the latest available slot before its deadline. The desk-check demonstrates how the algorithm maximises profit while satisfying scheduling constraints. The modified case also shows how changing an input value affects greedy decisions and total profit.
+
+
+ChatGPT is AI and can make mistakes.
+
