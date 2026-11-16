@@ -1,0 +1,471 @@
+Stage 6 – Attack Your Own Design (2 Marks)
+Objective: Test the MaximumEnergySaving algorithm using an adversarial dataset to determine whether selecting a job with a high individual energy-saving value could prevent the selection of multiple compatible jobs with a higher combined value.
+
+1. Construct an Adversarial Dataset
+I have constructed the following six-job dataset to challenge the greedy idea of selecting the job with the highest individual energy-saving value.
+
+Job
+
+Start Time
+
+Finish Time
+
+Energy Saving
+
+A
+
+1
+
+10
+
+100
+
+B
+
+1
+
+3
+
+40
+
+C
+
+3
+
+5
+
+40
+
+D
+
+5
+
+7
+
+40
+
+E
+
+7
+
+9
+
+40
+
+F
+
+10
+
+12
+
+20
+
+2. Why Is This Input Challenging?
+Job A offers an attractive individual saving of 100. However, selecting Job A prevents selecting Jobs B, C, D and E together.
+
+The combined energy-saving value of Jobs B, C, D and E is:
+
+40
++
+40
++
+40
++
+40
+=
+160
+40+40+40+40=160
+Therefore, choosing the job with the highest individual value does not necessarily produce the maximum overall energy savings.
+
+3. Prediction Before Applying the Algorithm
+I predict that the Dynamic Programming algorithm will select Jobs B, C, D, E and F instead of Job A.
+
+This is because the algorithm compares the total value of including a job with the value of excluding it, rather than simply selecting the job with the highest individual saving.
+
+4. Apply the Algorithm – Desk-Check
+Step 1: Sort jobs by finishing time
+The jobs are already arranged in ascending order of finishing time.
+
+Step 2: Calculate compatibility
+A job is compatible when:
+
+F
+i
+n
+i
+s
+h
+T
+i
+m
+e
+[
+j
+]
+≤
+S
+t
+a
+r
+t
+T
+i
+m
+e
+[
+i
+]
+FinishTime[j]≤StartTime[i]
+Job
+
+Finish Time
+
+Compatible Previous Job
+
+Compatible Index
+
+A
+
+10
+
+None
+
+0
+
+B
+
+3
+
+None
+
+0
+
+C
+
+5
+
+B
+
+2
+
+D
+
+7
+
+C
+
+3
+
+E
+
+9
+
+D
+
+4
+
+F
+
+12
+
+E and A
+
+5
+
+Step 3: Calculate DP states
+The recurrence is:
+
+D
+P
+[
+i
+]
+=
+max
+⁡
+(
+I
+n
+c
+l
+u
+d
+e
+V
+a
+l
+u
+e
+,
+E
+x
+c
+l
+u
+d
+e
+V
+a
+l
+u
+e
+)
+DP[i]=max(IncludeValue,ExcludeValue)
+Job
+
+Include Calculation
+
+Exclude Calculation
+
+DP State
+
+A
+
+100 + DP[0] = 100
+
+0
+
+100
+
+B
+
+40 + DP[0] = 40
+
+100
+
+100
+
+C
+
+40 + DP[2] = 140
+
+100
+
+140
+
+D
+
+40 + DP[3] = 180
+
+140
+
+180
+
+E
+
+40 + DP[4] = 220
+
+180
+
+220
+
+F
+
+20 + DP[5] = 240
+
+220
+
+240
+
+FINAL DP VALUES
+
+A
+
+100
+B
+
+100
+C
+
+140
+D
+
+180
+E
+
+220
+F
+
+240
+Step 4: Reconstruct the Selected Jobs
+Start from DP[6] = 240.
+
+Job Checked
+
+Decision
+
+Reason
+
+F
+
+Select
+
+240 is greater than 220
+
+E
+
+Select
+
+220 is greater than 180
+
+D
+
+Select
+
+180 is greater than 140
+
+C
+
+Select
+
+140 is greater than 100
+
+B
+
+Reject
+
+DP[2] = DP[1] = 100
+
+A
+
+Select
+
+DP[1] = 100 is greater than DP[0] = 0
+
+There is an important reconstruction correction here: when tracing backwards from F, selecting F moves directly to DP[5], then E moves to DP[4], D to DP[3], C to DP[2], and B is excluded. The resulting selected jobs are A, C, D, E and F? This would not be compatible, so the compatibility calculation and DP table must be checked together.
+
+Correct compatibility and DP calculation:
+
+Job A finishes at 10, so B, C, D and E cannot be selected alongside A. The jobs are not actually sorted in finish-time order in the supplied table. The correct sorted order is:
+
+Index
+
+Job
+
+Finish
+
+1
+
+B
+
+3
+
+2
+
+C
+
+5
+
+3
+
+D
+
+7
+
+4
+
+E
+
+9
+
+5
+
+A
+
+10
+
+6
+
+F
+
+12
+
+The correct compatibility indices are 0, 1, 2, 3, 0 and 5.
+
+The correct DP calculations are:
+
+Job
+
+Include
+
+Exclude
+
+DP
+
+B
+
+40
+
+0
+
+40
+
+C
+
+80
+
+40
+
+80
+
+D
+
+120
+
+80
+
+120
+
+E
+
+160
+
+120
+
+160
+
+A
+
+100
+
+160
+
+160
+
+F
+
+180
+
+160
+
+180
+
+The reconstructed optimal schedule is B, C, D, E and F.
+
+Optimal result
+180
+Total energy-saving value
+
+B
+
+C
+
+D
+
+E
+
+F
+
+Selected jobs: B, C, D, E and F.
+
+5. Critical Decision and Design Evaluation
+Critical decision: Whether to select Job A with energy savings of 100 or reject it in favour of Jobs B, C, D and E with combined savings of 160.
+
+Does the algorithm produce the optimal result? Yes. It selects B, C, D, E and F, achieving 180.
+
+Does any decision rule fail? No. The include/exclude recurrence correctly compares the complete compatible solutions instead of relying on individual job values.
+
+6. Conclusion
+The adversarial dataset demonstrates that selecting the job with the highest individual energy-saving value may lead to a poor overall result. However, the Dynamic Programming algorithm successfully handles this situation by comparing inclusion and exclusion values at every state. It produces the optimal total energy-saving value of 180.
+
+The test confirms that the algorithm is more reliable than a simple greedy selection strategy for weighted job scheduling
