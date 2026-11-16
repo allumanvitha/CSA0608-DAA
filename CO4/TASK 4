@@ -1,0 +1,132 @@
+Stage 4 – Design Complete Pseudocode (4 Marks)
+Algorithm: MaximumEnergySaving
+
+Objective: Select a set of mutually compatible jobs to maximise the total energy-saving value without selecting overlapping or incompatible jobs.
+
+The algorithm uses Dynamic Programming to calculate the maximum achievable energy savings and reconstruct the selected jobs.
+
+Pseudocode
+
+text
+ALGORITHM MaximumEnergySaving
+
+BEGIN
+
+    READ N
+
+    FOR i ← 1 TO N DO
+        READ JobID[i]
+        READ StartTime[i]
+        READ FinishTime[i]
+        READ EnergySaving[i]
+    END FOR
+
+    SORT jobs in ascending order of FinishTime
+
+    FOR i ← 1 TO N DO
+
+        Compatible[i] ← 0
+
+        FOR j ← i-1 DOWNTO 1 DO
+
+            IF FinishTime[j] <= StartTime[i] THEN
+
+                Compatible[i] ← j
+
+                EXIT FOR
+
+            END IF
+
+        END FOR
+
+    END FOR
+
+    DP[0] ← 0
+
+    FOR i ← 1 TO N DO
+
+        IncludeValue ← EnergySaving[i] +
+                       DP[Compatible[i]]
+
+        ExcludeValue ← DP[i-1]
+
+        DP[i] ← MAX(IncludeValue, ExcludeValue)
+
+    END FOR
+
+    MaximumSaving ← DP[N]
+
+    SelectedCount ← 0
+
+    i ← N
+
+    WHILE i > 0 DO
+
+        IncludeValue ← EnergySaving[i] +
+                       DP[Compatible[i]]
+
+        ExcludeValue ← DP[i-1]
+
+        IF IncludeValue > ExcludeValue THEN
+
+            SelectedCount ← SelectedCount + 1
+
+            SelectedJobs[SelectedCount] ← JobID[i]
+
+            i ← Compatible[i]
+
+        ELSE
+
+            i ← i - 1
+
+        END IF
+
+    END WHILE
+
+    WRITE "Selected Jobs"
+
+    FOR i ← SelectedCount DOWNTO 1 DO
+
+        WRITE SelectedJobs[i]
+
+    END FOR
+
+    WRITE "Maximum Total Energy Saving:",
+          MaximumSaving
+
+    RETURN SelectedJobs, MaximumSaving
+
+END ALGORITHM
+Explanation of the Algorithm
+Input: Read the number of jobs, job IDs, start times, finish times and energy-saving values.
+
+Preprocessing: Sort all jobs in ascending order of finishing time.
+
+Compatibility calculation: For each job, identify the latest earlier job that finishes before or exactly when the current job starts.
+
+Initialisation: Set DP[0] ← 0, since no jobs produce zero energy savings.
+
+Decision logic: Calculate two possibilities:
+
+Include the current job and add its energy savings to the best compatible previous solution.
+
+Exclude the current job and retain the previous optimal solution.
+
+State update: Store the larger value in DP[i].
+
+Reconstruction: Trace backwards through the DP states to identify the selected jobs.
+
+Output: Display the selected job IDs and maximum total energy-saving value.
+
+Important Conditions
+Compatible jobs: A previous job is compatible when FinishTime[j] ≤ StartTime[i].
+
+Incompatible jobs: Jobs that overlap cannot both be selected.
+
+Termination: The DP calculation terminates after all jobs are processed. Reconstruction terminates when i = 0.
+
+Maximum value: DP[N] stores the maximum total energy-saving value.
+
+Note: This algorithm assumes each job has a start time, finish time and non-negative energy-saving value. If two jobs have equal include and exclude values, the algorithm chooses the exclusion option; either choice preserves the maximum value.
+
+
