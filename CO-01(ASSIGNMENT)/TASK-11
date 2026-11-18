@@ -1,0 +1,70 @@
+TASK 11 – Recommend and Defend the Final Design
+4 Marks
+1. Recommended Algorithm
+Recommended approach: Hash Table Search using Separate Chaining.
+
+For the university student-record system, Hash Table Search is recommended because registration numbers are unique identifiers and students need to be located quickly.
+2. Reasons for Selecting Hash Table Search
+1. It provides fast average search performance.
+2. It does not require sorting registration numbers.
+3. It directly calculates the bucket index using a hash function.
+4. It is suitable for frequent student-record searches.
+5. It can handle collisions using separate chaining.
+3. Theoretical Efficiency
+For n student records:
+
+Average-case search:
+\[
+T(n)=\Theta(1)
+\]
+
+Worst-case search:
+\[
+T(n)=O(n)
+\]
+
+Hash-table construction:
+\[
+P(n)=O(n)
+\]
+
+The average search time remains approximately constant when the hash function distributes registration numbers evenly and the load factor is controlled.
+4. Experimental Performance
+The experimental results from Task 9 show the following comparison.
+Input size	Linear comparisons	Binary comparisons	Hash comparisons
+1,000	1,000	10	1
+10,000	10,000	14	1
+100,000	100,000	17	1
+1,000,000	1,000,000	20	1
+
+The Hash Table Search performed one comparison for the successful searches in the test dataset because the selected hash-table size prevented collisions.
+
+This supports selecting Hash Table Search for frequent registration-number lookups.
+5. Preprocessing Cost
+Hash Table Search requires an initial construction process.
+- All registration numbers must be inserted into the hash table.
+- A hash function calculates the index for every registration number.
+- Collisions are handled using separate chaining.
+The average construction complexity is:
+\[
+O(n)
+\]
+
+Although construction requires additional time and memory, it is worthwhile when the database is searched repeatedly.
+6. Trade-offs and Limitations
+Advantage	Limitation
+Fast average search	Requires extra memory
+No sorting required	Hash collisions may occur
+Suitable for frequent searches	Requires hash-table maintenance
+Fast registration-number lookup	Worst case can become O(n)
+
+7. Practicality for Growing Databases
+The recommended approach remains practical as the database grows from thousands to millions of student records.
+
+A suitable hash function, sufficient bucket capacity and collision handling help maintain efficient searching.
+
+When new student records are added, they can be inserted into the hash table without sorting the entire database.
+8. Final Recommendation
+Hash Table Search with Separate Chaining is recommended for the university student-record system. Its average search complexity is O(1), and the experimental comparison showed fewer registration-number comparisons than Linear Search and Binary Search.
+
+Although it requires additional memory and table construction, these costs are justified when many searches are performed. Therefore, it provides a suitable balance between search speed, preprocessing and database maintenance.
