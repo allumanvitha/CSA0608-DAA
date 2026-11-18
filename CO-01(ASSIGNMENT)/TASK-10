@@ -1,0 +1,48 @@
+TASK 10 – Compare Theory with Experimental Behaviour
+4 Marks
+1. Introduction
+The theoretical analysis from Tasks 3–7 is compared with the experimental results obtained in Tasks 8–9. The purpose is to verify whether the actual performance of the algorithms agrees with their mathematical complexity.
+
+The three algorithms are Linear Search, Recursive Binary Search and Hash Table Search.
+2. Comparison of Theoretical and Experimental Results
+Algorithm	Theoretical average complexity	Expected experimental behaviour
+Linear Search	Θ(n)	Comparisons increase with dataset size
+Binary Search	Θ(log n)	Comparisons increase very slowly
+Hash Table Search	Θ(1)	Average comparisons remain nearly constant
+
+A. Linear Search
+Linear Search checks registration numbers one by one.
+- The theoretical worst-case complexity is O(n).
+- In the experiment, the number of comparisons increases from 1,000 to 1,000,000 as the dataset increases.
+- This confirms that its execution time increases with input size.
+Reason: Every additional registration number may require another comparison.
+B. Recursive Binary Search
+Binary Search repeatedly divides the sorted dataset into two halves.
+- The theoretical average and worst-case complexity is O(log n).
+- In the experiment, comparisons increase from approximately 10 for 1,000 records to 20 for 1,000,000 records.
+- This confirms the logarithmic growth predicted by mathematical analysis.
+Reason: Only one half of the remaining dataset is searched after each comparison.
+C. Hash Table Search
+Hash Table Search calculates an index and searches the corresponding bucket.
+- The theoretical average search complexity is O(1), assuming a good hash function and controlled load factor.
+- In the experiment, the generated registration numbers are distributed without collisions, so only one comparison is needed for successful searches.
+- This supports the expected constant average search behaviour.
+Reason: The hash function directly identifies the bucket containing the registration number.
+3. Why Theoretical and Experimental Results May Differ
+Theoretical analysis counts operations and ignores many practical hardware and software factors. Actual execution time may differ because of:
+1. Hardware: Processor speed and available RAM affect execution time.
+2. Programming language: Python function calls and loops have execution overhead.
+3. Memory access: Hash tables and arrays may have different memory-access costs.
+4. Preprocessing: Sorting and hash-table construction require additional time.
+5. Collisions: Poor hash distribution increases the number of comparisons.
+6. Operating system: Other running applications may affect measured execution time.
+Therefore, experimental execution time may not exactly match theoretical predictions, even when the growth pattern agrees.
+4. Which Algorithm Scales Better?
+- Linear Search becomes less suitable as the database grows because its number of comparisons increases linearly.
+- Binary Search scales well because its search complexity increases logarithmically.
+- Hash Table Search provides the fastest average lookup when registration numbers are distributed properly.
+However, Binary Search requires sorted data, whereas Hash Table Search requires additional memory and preprocessing.
+5. Final Result
+The experimental behaviour generally agrees with the theoretical complexity of all three algorithms. Linear Search shows linear growth, Binary Search shows logarithmic growth, and Hash Table Search shows approximately constant average search behaviour under the tested conditions.
+
+Therefore, Binary Search and Hash Table Search are more suitable than Linear Search for large university student-record databases.
