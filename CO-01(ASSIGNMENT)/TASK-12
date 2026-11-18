@@ -1,0 +1,182 @@
+TASK 12 – Re-evaluate and Adapt the Design
+8 Marks
+Changed Requirement:
+
+The university now needs to process:
+- 50,000 search requests per hour.
+- 1,000,000 student records.
+- New student records are added only once per day.
+A. Impact Analysis – 2 Marks
+1. What Has Changed?
+In the original problem, the main objective was to locate a registration number efficiently.
+
+In the changed requirement, the system must handle 50,000 search requests every hour using a database containing 1,000,000 records.
+
+New student records are added only once per day.
+2. Original Assumptions Affected
+The following assumptions have changed:
+1. The database is now very large.
+2. The number of searches has increased significantly.
+3. The database is updated less frequently.
+4. Search performance has become more important than frequent insertion performance.
+3. Why Search Frequency Is Important
+The system receives:
+\[
+50,000\text{ searches per hour}
+\]
+
+Number of searches per day:
+\[
+50,000\times24=12,00,000
+\]
+
+Therefore, the system processes approximately 12 lakh search requests every day.
+
+Even a small improvement in the average search time can make a significant difference when repeated millions of times.
+4. Effect of Low Update Frequency
+Since new student records are added only once per day, the system does not need to rebuild its searching structure after every request.
+
+The hash table can be maintained throughout the day and updated when new records are added.
+
+Conclusion: The changed requirement makes fast searching and efficient index maintenance more important.
+
+B. Evaluation of the Original Design – 2 Marks
+1. Original Recommended Solution
+The original design recommended Hash Table Search using Separate Chaining.
+
+Its complexity is:
+Operation	Average complexity
+Build hash table	O(n)
+Search registration number	O(1)
+Insert one new record	O(1) average
+
+2. Expected Behaviour Under 50,000 Searches per Hour
+For one million student records, Hash Table Search calculates the bucket index and checks the corresponding bucket.
+
+Assuming good hash distribution and a controlled load factor, the average number of comparisons remains small.
+
+For 50,000 searches per hour, the hash table avoids repeatedly scanning the entire database.
+3. Is Preprocessing Acceptable?
+Yes. The hash table is constructed once and reused for many searches.
+
+Since records are updated only once per day, the construction cost can be handled during the daily update process or when the system starts.
+4. Could Another Approach Be Better?
+Binary Search is another possible solution.
+
+Its search complexity is:
+\[
+O(\log n)
+\]
+
+For one million records, approximately 20 comparisons are sufficient in the worst case.
+
+However, the data must remain sorted, and insertion into an array-based sorted structure may require shifting elements.
+
+Hash Table Search is more appropriate for repeated exact registration-number searches.
+
+Conclusion: The original Hash Table Search design remains suitable, but its implementation should be improved to support high-frequency searches and daily updates.
+
+C. Adaptation or Redesign – 2 Marks
+Decision: MODIFY
+1. Revised Design
+I recommend modifying the original Hash Table Search by using a persistent hash-based index with Separate Chaining.
+
+The revised design contains:
+1. A student database containing all student details.
+2. A hash index containing registration numbers and references to their corresponding records.
+3. A hash function to calculate bucket positions.
+4. Separate Chaining to handle collisions.
+5. A daily update mechanism to add new student records.
+
+
+
+
+
+
+
+
+clipart-library.com
+
+
+2. Working Procedure
+1. Load the student registration numbers and their record references into the hash index.
+2. Receive a registration-number search request.
+3. Calculate the hash index.
+4. Search the corresponding bucket.
+5. Retrieve the matching student record.
+6. Return the student details.
+7. Add new records to the database and hash index during the daily update.
+3. Complexity of the Revised Design
+Let n represent the number of student records.
+Operation	Average complexity
+Initial hash-index construction	O(n)
+Search	O(1)
+Insert one record	O(1)
+Search worst case	O(n)
+
+The revised approach retains the same average search complexity but improves the overall design through persistent indexing and controlled updates.
+4. What Has Changed?
+- The original hash-table searching approach is retained.
+- The hash index is maintained instead of rebuilding it for every search.
+- Student details are stored separately from the search index.
+- New records are added to the index during the daily update.
+- Collision handling and table capacity are monitored.
+
+D. Evidence-Based Defence – 2 Marks
+1. Mathematical Evidence
+For one million records:
+
+Linear Search:
+\[
+O(n)=O(1,000,000)
+\]
+
+Binary Search:
+\[
+O(\log_2 1,000,000)\approx20
+\]
+
+Hash Table Search:
+\[
+O(1)\text{ average}
+\]
+
+Therefore, Hash Table Search provides the most suitable average lookup behaviour for frequent exact registration-number searches.
+2. Search Frequency Evidence
+The university receives 50,000 requests per hour.
+\[
+50,000\times24=12,00,000
+\]
+
+This means the system processes approximately 12 lakh searches per day.
+
+A hash index avoids scanning all one million records for each search.
+3. Preprocessing Evidence
+The hash table requires O(n) time to construct.
+
+However, this cost is performed once and the index is reused for repeated searches.
+
+Because student records are added only once per day, the system can update the index during a scheduled daily update.
+4. Experimental Evidence
+The Task 9 experiment showed:
+Dataset size	Linear comparisons	Binary comparisons	Hash comparisons
+1,000	1,000	10	1
+10,000	10,000	14	1
+100,000	100,000	17	1
+1,000,000	1,000,000	20	1
+
+These are comparison counts from the selected successful-search test, not measured execution times. The hash results assume the collision-free distribution produced by the test data.
+5. Final Design Decision
+I choose to modify and retain Hash Table Search with Separate Chaining for the university student-record system.
+
+The modified solution is suitable because:
+- It supports frequent registration-number searches.
+- It provides O(1) average search complexity under suitable hashing conditions.
+- It supports daily insertion of new student records.
+- It avoids repeated sorting of the complete database.
+- It can handle one million or more records with sufficient memory and proper table resizing.
+Limitation: Actual system performance must be tested under concurrent requests, memory constraints and realistic registration-number distributions. O(1) average complexity does not guarantee a fixed response time for every request.
+Overall Conclusion
+The original algorithmic analysis and experimental comparison show that Hash Table Search is a suitable solution for locating student registration numbers. Under the changed requirement of 50,000 searches per hour and one million student records, a persistent hash-based index with Separate Chaining provides an efficient solution.
+
+The design is modified to support frequent searches and less frequent daily updates. This provides a practical balance between search efficiency, preprocessing cost, memory usage and database maintenance.
