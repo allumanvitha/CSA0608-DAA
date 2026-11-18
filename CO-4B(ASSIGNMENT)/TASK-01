@@ -1,0 +1,331 @@
+TASK 1 – BUILD AND VALIDATE A DYNAMIC PROGRAMMING SOLUTION
+Word Wrap as a Document-Layout Engine (8 Marks)
+Programming Language: Python
+Algorithm: Dynamic Programming
+Objective: Arrange a given set of words into lines without exceeding the maximum line width and minimize the total unused-space penalty.
+1. Problem Analysis
+In a document-layout system, words must be arranged into lines of a fixed maximum width W.
+- Each line must not exceed the maximum width.
+- Extra spaces at the end of a line are calculated as unused spaces.
+- The penalty for a nonfinal line is the square of its unused spaces.
+- The final line has zero penalty.
+- The objective is to minimize the total penalty.
+Penalty formula:
+\[
+Penalty(s)=s^2
+\]
+
+For the final line:
+\[
+Penalty(s)=0
+\]
+
+Example:
+
+If the maximum width is 12 and a line contains 7 characters:
+- Unused spaces = 12 − 7 = 5
+- Penalty = \(5^2=25\)
+2. Dynamic Programming Approach
+Dynamic Programming is used to find the best arrangement by solving smaller subproblems.
+
+DP State:
+
+dp[i] represents the minimum penalty required to arrange the first i words.
+
+Recurrence relation:
+\[
+dp[i]=\min_{0\leq j<i}
+\left(dp[j]+Cost(j,i)\right)
+\]
+
+Where:
+\[
+Cost(j,i)=
+\begin{cases}
+0 & \text{if } i=n\\
+s^2 & \text{otherwise}
+\end{cases}
+\]
+
+Here:
+- n = total number of words.
+- s = unused spaces in the current line.
+- dp[0] = 0.
+A predecessor array is also maintained to reconstruct the optimal arrangement.
+3. Source Code (Python)
+            if cost < dp[i]:                dp[i] = cost                prev[i] = j    # Check whether arrangement is possible    if dp[n] == INF:        print("No valid arrangement possible")        return    # Display DP states    print("\nDP TABLE")    print("i\tMinimum Cost\tPrevious Index")    for i in range(1, n + 1):        print(i, "\t", dp[i], "\t\t", prev[i])    # Reconstruct optimal arrangement    result = []    i = n    while i > 0:        j = prev[i]        line = " ".join(words[j:i])        spaces = W - len(line)        if i == n:            penalty = 0        else:            penalty = spaces ** 2        result.append((line, spaces, penalty))        i = j    result.reverse()    # Display final result    print("\nOPTIMAL WORD ARRANGEMENT")    total = 0    for number, (line, spaces, penalty) in enumerate(        result, start=1    ):        print("Line", number, ":", line)        print("Unused spaces:", spaces)        print("Penalty:", penalty)        print()        total += penalty    print("Minimum Total Penalty:", total)# Test Inputwords = [    "Dynamic", "programming", "helps", "arrange",    "words", "into", "balanced", "lines",    "for", "documents"]W = 12word_wrap(words, W)
+
+
+
+4. Test Input
+The same text is used for all three experiments.
+Words:
+Dynamic programming helps arrange words into
+balanced lines for documents
+
+Number of words: 10
+Maximum line width: 12
+
+
+5. Output – Test Case 1 (Width = 12)
+Execution result
+DP TABLE
+
+i    Minimum Cost    Previous Index
+1       25               0
+2       26               1
+3       75               2
+4       100              3
+5       149              4
+6       104              4
+7       120              6
+8       169              7
+9       129              7
+10      129              9
+
+OPTIMAL WORD ARRANGEMENT
+
+Line 1: Dynamic
+Unused spaces: 5
+Penalty: 25
+
+Line 2: programming
+Unused spaces: 1
+Penalty: 1
+
+Line 3: helps
+Unused spaces: 7
+Penalty: 49
+
+Line 4: arrange
+Unused spaces: 5
+Penalty: 25
+
+Line 5: words into
+Unused spaces: 2
+Penalty: 4
+
+Line 6: balanced
+Unused spaces: 4
+Penalty: 16
+
+Line 7: lines for
+Unused spaces: 3
+Penalty: 9
+
+Line 8: documents
+Unused spaces: 3
+Penalty: 0
+
+Minimum Total Penalty: 129
+
+
+Calculation:
+\[
+25+1+49+25+4+16+9+0=129
+\]
+
+Therefore, the minimum total penalty is 129.
+6. Expose the DP Behaviour (2 Marks)
+The program displays intermediate DP states to show how the optimal solution is constructed.
+
+Meaning of the DP table:
+Column	Meaning
+i	Number of words considered
+Minimum Cost	Minimum penalty for the first i words
+Previous Index	Starting index of the final line in the optimal arrangement
+
+For example, when i = 6:
+dp[6] = 104
+prev[6] = 4
+
+
+This means:
+- The first 6 words can be arranged with a minimum penalty of 104.
+- The final line starts at word index 4.
+- The final line is words into.
+- Its unused spaces are 2.
+- Its penalty is 4.
+The remaining penalty before that line is 100.
+\[
+dp[6]=100+4=104
+\]
+
+Interpretation:
+1. The algorithm calculates the minimum penalty for smaller groups of words.
+2. It compares different possible line arrangements.
+3. It stores the best cost in the DP array.
+4. The predecessor array remembers the selected line boundary.
+5. Finally, the optimal arrangement is reconstructed using the predecessor array.
+This demonstrates that the solution is built from smaller optimal subproblems.
+
+7. Requirement Change – Different Line Widths (2 Marks)
+The same input text is tested using three different line widths:
+- Width 12
+- Width 16
+- Width 20
+Test Case 1: Width = 12
+Baseline case
+Prediction:
+- This is the original test case.
+- It will produce the baseline arrangement.
+- Minimum penalty is expected to be 129.
+Actual output:
+Line	Words	Unused spaces	Penalty
+1	Dynamic	5	25
+2	programming	1	1
+3	helps	7	49
+4	arrange	5	25
+5	words into	2	4
+6	balanced	4	16
+7	lines for	3	9
+8	documents	3	0
+
+Minimum total penalty = 129
+Test Case 2: Width = 16
+Prediction before execution:
+- The line arrangement will change.
+- The first two lines are expected to remain the same.
+- The first change is expected at the third line because helps arrange can fit together.
+- The total penalty may increase because the unused spaces in some nonfinal lines may increase.
+Actual output:
+Line 1: Dynamic
+Unused spaces: 9
+Penalty: 81
+
+Line 2: programming
+Unused spaces: 5
+Penalty: 25
+
+Line 3: helps arrange
+Unused spaces: 3
+Penalty: 9
+
+Line 4: words into
+Unused spaces: 6
+Penalty: 36
+
+Line 5: balanced lines
+Unused spaces: 2
+Penalty: 4
+
+Line 6: for documents
+Unused spaces: 3
+Penalty: 0
+
+Minimum Total Penalty: 155
+
+
+Calculation:
+\[
+81+25+9+36+4+0=155
+\]
+
+Prediction matched
+The first change occurred at line 3, as predicted. The total penalty increased from 129 to 155.
+Test Case 3: Width = 20
+Prediction before execution:
+- The line arrangement will change again.
+- The first change is expected at line 1 because Dynamic programming can fit together.
+- More words can be placed in each line.
+- The total penalty is expected to decrease significantly.
+Actual output:
+Line 1: Dynamic programming
+Unused spaces: 1
+Penalty: 1
+
+Line 2: helps arrange words
+Unused spaces: 1
+Penalty: 1
+
+Line 3: into balanced lines
+Unused spaces: 1
+Penalty: 1
+
+Line 4: for documents
+Unused spaces: 7
+Penalty: 0
+
+Minimum Total Penalty: 3
+
+
+Calculation:
+\[
+1+1+1+0=3
+\]
+
+Prediction matched
+The first change occurred at line 1. The total penalty decreased from 155 to 3.
+Comparison of all three test cases
+Parameter	Width 12	Width 16	Width 20
+Number of lines	8	6	4
+Minimum penalty	129	155	3
+Arrangement changed	Baseline	Yes	Yes
+First change	—	Line 3	Line 1 (compared with width 16)
+
+Minimum Penalty Comparison
+Total penalty for the same text at three different line widths.
+Interpretation:
+- At width 12, the words are arranged into 8 lines with a penalty of 129.
+- At width 16, the arrangement changes into 6 lines, but the penalty increases to 155.
+- At width 20, the words are arranged into 4 lines and the penalty decreases to 3.
+An important observation is that increasing the line width does not always decrease the penalty. This is because the penalty depends on the square of unused spaces in each nonfinal line.
+8. Boundary Test (1 Mark)
+Selected boundary case: A word whose length is exactly equal to the maximum line width.
+
+Test input:
+words = ["hello"]W = 5word_wrap(words, W)
+Expected output:
+DP TABLE
+
+i    Minimum Cost    Previous Index
+1       0                0
+
+OPTIMAL WORD ARRANGEMENT
+
+Line 1: hello
+Unused spaces: 0
+Penalty: 0
+
+Minimum Total Penalty: 0
+
+
+Why was this test selected?
+- The word length is exactly equal to the maximum width.
+- There are zero unused spaces.
+- The final line must have zero penalty.
+- It checks whether the program correctly handles exact-width words.
+- It can identify errors caused by incorrect boundary conditions such as using >= instead of >.
+Expected result: The program should accept the word and produce zero penalty.
+9. Time and Space Complexity
+Operation	Complexity
+DP computation	\(O(n^2)\)
+Reconstructing arrangement	\(O(n)\)
+DP array space	\(O(n)\)
+Predecessor array space	\(O(n)\)
+Total space complexity	\(O(n)\)
+Here, n represents the number of words.
+10. Final Result
+The Word Wrap problem was successfully implemented using Dynamic Programming in Python.
+The program:
+1. Calculates the minimum total penalty.
+2. Arranges words into optimal lines.
+3. Displays unused spaces and individual line penalties.
+4. Displays intermediate DP states.
+5. Tests the same text with three different line widths.
+6. Validates the solution using a boundary test.
+Conclusion: Dynamic Programming successfully finds the minimum-penalty word arrangement. The experiments also demonstrate that changing the maximum line width can change both the arrangement and the total penalty.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is this conversation helpful so far?
