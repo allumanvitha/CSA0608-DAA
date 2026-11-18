@@ -1,0 +1,71 @@
+TASK 2 – Identify the Basic Operation
+2 Marks
+1. Linear Search (Iterative)
+Basic Operation: Registration number comparison (A[i] == target).
+
+Where it occurs:
+- Inside the FOR loop.
+- Each element is compared with the target registration number.
+Why is it appropriate?
+
+The comparison determines whether the required registration number is found. Linear Search checks elements one by one, so the number of comparisons directly affects its execution time.
+
+Number of executions as input size (n) increases:
+- Best Case: 1 comparison (target is the first element).
+- Average Case: Approximately n/2 comparisons.
+- Worst Case: n comparisons (target is last or not present).
+Therefore, the number of comparisons increases linearly with input size.
+2. Recursive Binary Search
+Basic Operation: Registration number comparison (A[mid] == target and target < A[mid]).
+
+Where it occurs:
+- Inside the recursive function.
+- The middle element is compared with the target to decide which half should be searched.
+Why is it appropriate?
+
+The comparison determines whether the target is found or whether the left or right half should be searched. Each comparison reduces the remaining search area by approximately half.
+
+Number of executions as input size (n) increases:
+- Best Case: 1 comparison.
+- Average Case: O(log n).
+- Worst Case: Approximately log₂(n) comparisons.
+For example:
+Input size (n)	Maximum search levels
+4	2
+8	3
+16	4
+32	5
+64	6
+
+Therefore, the number of comparisons increases logarithmically as the input size increases.
+3. Hash Table Search
+Basic Operation: Registration number equality comparison (stored_value == target).
+
+Where it occurs:
+- Inside the hash table bucket search.
+- After calculating the hash index, the target is compared with stored registration numbers in that bucket.
+Why is it appropriate?
+
+The equality comparison determines whether the required registration number exists in the selected bucket. The number of comparisons depends on how many elements are stored in that bucket.
+
+Number of executions as input size (n) increases:
+- Best Case: 1 comparison.
+- Average Case: Approximately O(1), when the hash function distributes values evenly and collisions are limited.
+- Worst Case: O(n), when many registration numbers are stored in the same bucket.
+For example:
+Input size (n)	Average comparisons (ideal distribution)
+10	Approximately 1
+100	Approximately 1
+1,000	Approximately 1
+10,000	Approximately 1
+
+Therefore, with a good hash function and suitable table size, the average number of comparisons remains nearly constant as input size increases.
+
+4. Overall Comparison
+Algorithm	Basic Operation	Best Case	Average Case	Worst Case
+Linear Search	Equality comparison	O(1)	O(n)	O(n)
+Recursive Binary Search	Key comparison	O(1)	O(log n)	O(log n)
+Hash Table Search	Equality comparison	O(1)	O(1)	O(n)
+
+5. Result
+The basic operation for all three algorithms is the comparison of registration numbers. However, the number of comparisons differs based on the searching strategy. Linear Search increases linearly, Binary Search increases logarithmically, and Hash Table Search generally requires constant-time comparisons on average. These basic operations help evaluate and compare the efficiency of the three algorithms.
