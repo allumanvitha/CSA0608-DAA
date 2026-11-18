@@ -1,0 +1,333 @@
+TASK 3 – ROUTING ENGINE UNDER CHANGING NETWORK CONDITIONS
+Dijkstra + Bellman-Ford + Floyd + Warshall (10 Marks)
+Programming Language: Python
+Algorithms Used:
+1. Dijkstra's Algorithm
+2. Bellman-Ford Algorithm
+3. Floyd's Algorithm (Floyd-Warshall)
+4. Warshall's Algorithm
+1. Problem Analysis
+A logistics company needs a routing system to find the shortest paths between different locations.
+
+Each location is represented as a vertex, and each connection between locations is represented as a weighted edge.
+
+The system must:
+- Find the shortest route from a selected source.
+- Display the actual route and distance.
+- Handle negative edge weights.
+- Detect negative-weight cycles.
+- Find shortest distances between every pair of locations.
+- Check whether one location can reach another.
+Graph definition:
+
+We create a network containing 8 vertices and 12 directed edges.
+Vertex	Location
+A	Warehouse
+B	City Center
+C	Airport
+D	Railway Station
+E	Hospital
+F	Shopping Mall
+G	Industrial Area
+H	Delivery Hub
+
+Stage A – Normal Routing
+Normal graph
+Edges and weights:
+From	To	Weight
+A	B	4
+A	C	2
+B	C	1
+B	D	5
+C	D	8
+C	E	10
+D	E	2
+D	F	6
+E	F	3
+E	G	7
+F	G	1
+G	H	2
+
+All edges are directed. All weights in Stage A are nonnegative.
+2. Source Code – Complete Routing Engine
+The following Python program implements all four algorithms, reconstructs paths, displays predecessor information, and detects negative cycles.
+INF = float('inf')vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']# Stage A: Normal weighted graphedges = [    ('A', 'B', 4),    ('A', 'C', 2),    ('B', 'C', 1),    ('B', 'D', 5),    ('C', 'D', 8),    ('C', 'E', 10),    ('D', 'E', 2),    ('D', 'F', 6),    ('E', 'F', 3),    ('E', 'G', 7),    ('F', 'G', 1),    ('G', 'H', 2)]# ---------------------------------# STAGE A: DIJKSTRA# ---------------------------------def dijkstra(source):    dist = {v: INF for v in vertices}    prev = {v: None for v in vertices}    visited = set()    order = []    dist[source] = 0    while len(visited) < len(vertices):
+
+
+
+3. Stage A – Normal Routing Using Dijkstra (2 Marks)
+Selected source vertex: A (Warehouse)
+
+Dijkstra's algorithm finds the shortest distance from source A to all other vertices.
+
+
+
+
+
+
+
+
+Initialize source A
+A starts at 0; all other distances start at ∞.
+
+
+
+
+
+
+
+
+
+
+Give feedback
+
+Execution output
+STAGE A: DIJKSTRA
+
+Finalised: A Distance: 0
+Finalised: C Distance: 2
+Finalised: B Distance: 4
+Finalised: D Distance: 9
+Finalised: E Distance: 11
+Finalised: F Distance: 14
+Finalised: G Distance: 15
+Finalised: H Distance: 17
+
+DIJKSTRA RESULTS
+
+A Distance: 0  Path: A
+  Predecessor: None
+
+B Distance: 4  Path: A -> B
+  Predecessor: A
+
+C Distance: 2  Path: A -> C
+  Predecessor: A
+
+D Distance: 9  Path: A -> B -> D
+  Predecessor: B
+
+E Distance: 11  Path: A -> B -> D -> E
+  Predecessor: D
+
+F Distance: 14  Path: A -> B -> D -> E -> F
+  Predecessor: E
+
+G Distance: 15  Path: A -> B -> D -> E -> F -> G
+  Predecessor: F
+
+H Distance: 17  Path: A -> B -> D -> E -> F -> G -> H
+  Predecessor: G
+
+
+Shortest distance table
+Vertex	Shortest distance	Actual path
+A	0	A
+B	4	A → B
+C	2	A → C
+D	9	A → B → D
+E	11	A → B → D → E
+F	14	A → B → D → E → F
+G	15	A → B → D → E → F → G
+H	17	A → B → D → E → F → G → H
+
+Finalisation order:
+\[
+A\rightarrow C\rightarrow B\rightarrow D\rightarrow E
+\rightarrow F\rightarrow G\rightarrow H
+\]
+
+Interpretation:
+- A is the source, so its distance is zero.
+- C is finalised second because its distance is 2.
+- B is finalised next because its distance is 4.
+- The algorithm continues selecting the smallest tentative distance.
+- Finally, H is reached with a minimum distance of 17.
+
+4. Stage B – Introduce a Negative Edge (2 Marks)
+We now modify the graph by changing the weight of edge B → C from 1 to -5.
+
+Modified edge:
+From	To	Original weight	Modified weight
+B	C	1	-5
+
+Prediction before execution
+My predictions are:
+1. Dijkstra's algorithm will no longer be guaranteed to give the correct shortest paths because negative weights are introduced.
+2. Vertex C may be affected because it is initially finalised before B.
+3. The route A → B → C may become shorter than A → C.
+4. Bellman-Ford should identify the shorter route correctly because it supports negative edge weights, provided there is no reachable negative cycle.
+Important code modification
+In the previous source code, replace:
+edges[4] = ('C', 'D', -5)
+
+
+
+with:
+edges[2] = ('B', 'C', -5)
+
+
+
+Also execute Dijkstra after the modification:
+print("\nDIJKSTRA WITH NEGATIVE EDGE")dijkstra('A')print("\nBELLMAN-FORD WITH NEGATIVE EDGE")bellman_ford('A')
+
+
+
+Actual Dijkstra output
+DIJKSTRA WITH NEGATIVE EDGE
+
+Finalised: A Distance: 0
+Finalised: C Distance: 2
+Finalised: B Distance: 4
+Finalised: D Distance: 9
+Finalised: E Distance: 11
+Finalised: F Distance: 14
+Finalised: G Distance: 15
+Finalised: H Distance: 17
+
+
+Dijkstra finalises C with distance 2 before processing B. When B later provides a shorter route to C, the implementation ignores it because C is already visited.
+Actual Bellman-Ford output
+BELLMAN-FORD RESULTS
+
+Iteration 1:
+A: 0
+B: 4
+C: -1
+D: 7
+E: 9
+F: 12
+G: 13
+H: 15
+
+Iteration 2:
+A: 0
+B: 4
+C: -1
+D: 7
+E: 9
+F: 12
+G: 13
+H: 15
+
+
+Comparison
+Vertex	Dijkstra	Bellman-Ford
+A	0	0
+B	4	4
+C	2	-1
+D	9	7
+E	11	9
+F	14	12
+G	15	13
+H	17	15
+
+Negative edge successfully exposed
+Correct shortest route to H:
+\[
+A\rightarrow B\rightarrow C\rightarrow D
+\rightarrow E\rightarrow F\rightarrow G\rightarrow H
+\]
+
+Total distance:
+\[
+4-5+8+2+3+1+2=15
+\]
+
+Interpretation: The prediction was correct. Dijkstra returned incorrect distances because it finalised C too early. Bellman-Ford successfully found the shorter routes.
+
+5. Stage C – Production Failure: Negative Cycle Detection (2 Marks)
+A negative-weight cycle occurs when the total weight of a cycle is negative.
+
+We introduce one additional edge:
+From	To	Weight
+E	C	-15
+
+The modified cycle is:
+Negative cycle
+C → D → E → C
+C
+
+D
+
+E
+
+C
+
+
+8 + 2 − 15 = −5
+Total cycle weight = −5
+
+Code modification
+Replace the previous Stage C edge addition with:
+edges.append(('E', 'C', -15))print("\nSTAGE C: NEGATIVE CYCLE")bellman_ford('A')
+
+
+
+Expected output
+STAGE C: NEGATIVE CYCLE
+
+Iteration 1:
+Distances continue decreasing.
+
+Iteration 2:
+Distances continue decreasing.
+
+...
+
+NEGATIVE WEIGHT CYCLE DETECTED!
+Edge causing further relaxation: C -> D
+
+
+The exact edge reported can depend on the order of the edges.
+How does the program detect the cycle?
+1. Bellman-Ford performs relaxation for V−1 iterations.
+2. For 8 vertices, it performs at most 7 iterations.
+3. It then checks every reachable edge one more time.
+4. If any distance can still be reduced, a reachable negative-weight cycle exists.
+5. The program displays an error instead of reporting misleading shortest distances.
+Why is it important?
+
+A negative cycle allows the route cost to decrease every time the cycle is repeated. Therefore, a finite shortest-path distance does not exist for vertices reachable from that cycle.
+
+6. Stage D – All-Pairs Shortest Paths Using Floyd's Algorithm (2 Marks)
+The analytics team now requires the shortest distance between every pair of locations.
+
+For this requirement, we use Floyd's Algorithm, also known as Floyd-Warshall.
+
+Working principle:
+- Initially, direct edge weights are stored in a distance matrix.
+- The diagonal elements are set to zero.
+- Each vertex is considered as an intermediate vertex.
+- The algorithm checks whether travelling through an intermediate vertex gives a shorter distance.
+- Finally, it displays the shortest distance between every pair.
+The original positive-weight graph is restored before this experiment.
+Floyd distance matrix – Actual output
+FLOYD DISTANCE MATRIX
+
+     A    B    C    D    E    F    G    H
+
+A    0    4    2    9   11   14   15   17
+B   INF   0    1    5    7   10   11   13
+C   INF  INF   0    8   10   13   14   16
+D   INF  INF  INF   0    2    5    6    8
+E   INF  INF  INF  INF   0    3    4    6
+F   INF  INF  INF  INF  INF   0    1    3
+G   INF  INF  INF  INF  INF  INF   0    2
+H   INF  INF  INF  INF  INF  INF  INF   0
+Interpretation:
+- Distance from A to H is 17.
+- Distance from A to D is 9.
+- Distance from B to H is 13.
+- Distance from D to H is 8.
+- INF means there is no available path between the two locations.
+For example, the shortest path from A to H is:
+\[
+A\rightarrow B\rightarrow D\rightarrow E
+\rightarrow F\rightarrow G\rightarrow H
+\]
+Total distance = 17.
+7. Warshall's Algorithm – Reachability Matrix (1 Mark)
+Warshall's Algorithm determines whether a path exists between every pair of vertices.
+It uses Boolean values:
+- 1 = Path
