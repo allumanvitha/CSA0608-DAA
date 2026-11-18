@@ -1,0 +1,329 @@
+TASK 4 – SMART MANUFACTURING OPTIMISATION
+Dynamic Programming for Assembly Line Scheduling (7 Marks)
+Programming Language: Python
+Algorithm: Dynamic Programming
+Objective: Find the minimum production time and the optimal sequence of stations across two assembly lines.
+1. Problem Analysis
+A manufacturing company operates two parallel assembly lines. Each line contains the same number of processing stations.
+
+A product can:
+1. Continue on the same assembly line.
+2. Transfer to the other assembly line before entering the next station.
+Each station has a processing time. Transferring between lines also requires additional time.
+
+The objective is to calculate the minimum total production time and identify the optimal route.
+Input Dataset
+We consider two assembly lines with four stations each.
+Parameter	Line 1	Line 2
+Station 1	4	5
+Station 2	5	6
+Station 3	3	5
+Station 4	2	4
+
+Transfer times:
+Transfer	Time
+Line 1 to Line 2	7, 4, 5
+Line 2 to Line 1	2, 3, 2
+
+Entry times:
+- Line 1 = 2
+- Line 2 = 3
+Exit times:
+- Line 1 = 3
+- Line 2 = 2
+2. Dynamic Programming Approach
+Let:
+- f1[j] = Minimum time to reach station j on Line 1.
+- f2[j] = Minimum time to reach station j on Line 2.
+- a1[j] = Processing time on Line 1.
+- a2[j] = Processing time on Line 2.
+- t1[j] = Transfer time from Line 1 to Line 2.
+- t2[j] = Transfer time from Line 2 to Line 1.
+Initial conditions:
+\[
+f_1[1]=e_1+a_1[1]
+\]
+
+\[
+f_2[1]=e_2+a_2[1]
+\]
+
+Transition equations:
+\[
+f_1[j]=\min
+\begin{cases}
+f_1[j-1]+a_1[j]\\
+f_2[j-1]+t_2[j-1]+a_1[j]
+\end{cases}
+\]
+
+\[
+f_2[j]=\min
+\begin{cases}
+f_2[j-1]+a_2[j]\\
+f_1[j-1]+t_1[j-1]+a_2[j]
+\end{cases}
+\]
+
+Final minimum time:
+\[
+T=\min(f_1[n]+x_1,\ f_2[n]+x_2)
+\]
+
+
+3. Task 4.1 – Build the Optimisation Engine (3 Marks)
+Python Source Code
+The following program calculates minimum production time, displays stay-versus-transfer decisions, and reconstructs the optimal route.
+# ASSEMBLY LINE SCHEDULING USING DPdef assembly_line(a1, a2, t1, t2, e1, e2, x1, x2):    n = len(a1)    f1 = [0] * n    f2 = [0] * n    # Store previous line for route reconstruction    p1 = [0] * n    p2 = [0] * n    # Entry time and first station    f1[0] = e1 + a1[0]    f2[0] = e2 + a2[0]    print("INITIAL DP VALUES")    print("Line 1:", f1[0])    print("Line 2:", f2[0])    print("\nDP DECISION TABLE")    print("Station | L1 Stay | L1 Transfer | Selected")    print("        | L2 Stay | L2 Transfer | Selected")    # Calculate DP values    for j in range(1, n):        # Line 1 decisions        stay1 = f1[j - 1] + a1[j]        transfer1 = f2[j - 1] + t2[j - 1] + a1[j]        if stay1 <= transfer1:            f1[j] = stay1
+
+
+
+Actual Output – Normal Case
+INITIAL DP VALUES
+Line 1: 6
+Line 2: 8
+
+DP DECISION TABLE
+
+Station | L1 Stay | L1 Transfer | Selected
+        | L2 Stay | L2 Transfer | Selected
+
+2 | 11 | 15 | Stay | 14 | 19 | Stay
+3 | 14 | 20 | Stay | 19 | 20 | Stay
+4 | 16 | 23 | Stay | 23 | 23 | Stay
+
+OPTIMAL PRODUCTION ROUTE
+
+Entry
+Line 1 - Station 1
+Line 1 - Station 2
+Line 1 - Station 3
+Line 1 - Station 4
+Exit
+
+Minimum Production Time = 19
+
+
+Calculation
+Initial time:
+\[
+f_1[1]=2+4=6
+\]
+
+\[
+f_2[1]=3+5=8
+\]
+
+At Station 2:
+\[
+f_1[2]=\min(6+5,\ 8+2+5)=11
+\]
+
+\[
+f_2[2]=\min(8+6,\ 6+7+6)=14
+\]
+
+At Station 3:
+\[
+f_1[3]=\min(11+3,\ 14+3+3)=14
+\]
+
+\[
+f_2[3]=\min(14+5,\ 11+4+5)=19
+\]
+
+At Station 4:
+\[
+f_1[4]=\min(14+2,\ 19+2+2)=16
+\]
+
+\[
+f_2[4]=\min(19+4,\ 14+5+4)=23
+\]
+
+Final production time:
+\[
+T=\min(16+3,\ 23+2)
+\]
+
+Minimum production time = 19
+The optimal route uses Line 1 for all four stations.
+
+4.2 Task 4.2 – Expose the Decision Process (1 Mark)
+The program displays the cost of staying on the current line and transferring from the other line.
+
+DP decision table:
+Station	L1 Stay	L1 Transfer	L1 Decision	L2 Stay	L2 Transfer	L2 Decision
+2	11	15	Stay	14	19	Stay
+3	14	20	Stay	19	20	Stay
+4	16	23	Stay	23	23	Stay
+
+Explanation:
+- At Station 2, Line 1 is selected because 11 is less than 15.
+- At Station 3, Line 1 is selected because 14 is less than 20.
+- At Station 4, Line 1 is selected because 16 is less than 23.
+- The final decision selects Line 1 because its exit cost is lower.
+The DP table shows how the algorithm compares alternative routes before selecting the minimum-cost decision.
+
+4.3 Task 4.3 – Predict Before You Execute (1 Mark)
+Requirement: Increase one transfer time substantially.
+
+We select the transfer time from Line 1 to Line 2 before Station 2.
+
+Original value:
+t1 = [7, 4, 5]
+
+
+
+Modified value:
+t1 = [30, 4, 5]
+
+
+
+Prediction before execution
+1. The optimal route is expected to remain on Line 1.
+2. The transfer decision into Line 2 at Station 2 will be affected.
+3. The transfer cost will increase from 19 to 42.
+4. The minimum production time is expected to remain 19 because the transfer is not selected.
+Modified execution
+Use:
+t1 = [30, 4, 5]assembly_line(a1, a2, t1, t2, e1, e2, x1, x2)
+
+
+
+Actual output:
+DP DECISION TABLE
+
+Station | L1 Stay | L1 Transfer | Selected
+        | L2 Stay | L2 Transfer | Selected
+
+2 | 11 | 15 | Stay | 14 | 42 | Stay
+3 | 14 | 20 | Stay | 19 | 20 | Stay
+4 | 16 | 23 | Stay | 23 | 23 | Stay
+
+OPTIMAL PRODUCTION ROUTE
+
+Entry
+Line 1 - Station 1
+Line 1 - Station 2
+Line 1 - Station 3
+Line 1 - Station 4
+Exit
+
+Minimum Production Time = 19
+
+
+Prediction matched
+Interpretation:
+
+The transfer cost increased substantially, but the optimal route did not change. The system continued using Line 1 because staying on the same line was cheaper.
+
+The total production time remained 19.
+
+4.4 Task 4.4 – Production Disruption Challenge (1 Mark)
+Now assume that the machine at Station 2 on Line 1 becomes slower due to a temporary production problem.
+
+Original processing time:
+a1 = [4, 5, 3, 2]
+
+
+
+Modified processing time:
+a1 = [4, 30, 3, 2]
+
+
+
+The processing time at Station 2 increases from 5 to 30.
+Prediction before execution
+- The optimal route may change.
+- The system is expected to select Line 2 at Station 2.
+- It may transfer back to Line 1 at Station 3.
+- The minimum production time will increase.
+Modified execution
+Use:
+a1 = [4, 30, 3, 2]t1 = [7, 4, 5]t2 = [2, 3, 2]assembly_line(a1, a2, t1, t2, e1, e2, x1, x2)
+
+
+
+Actual output:
+INITIAL DP VALUES
+Line 1: 6
+Line 2: 8
+
+DP DECISION TABLE
+
+Station | L1 Stay | L1 Transfer | Selected
+        | L2 Stay | L2 Transfer | Selected
+
+2 | 36 | 40 | Stay | 14 | 19 | Stay
+3 | 39 | 20 | Transfer | 19 | 45 | Stay
+4 | 22 | 23 | Stay | 23 | 29 | Stay
+
+OPTIMAL PRODUCTION ROUTE
+
+Entry
+Line 2 - Station 1
+Line 2 - Station 2
+Transfer to Line 1
+Line 1 - Station 3
+Line 1 - Station 4
+Exit
+
+Minimum Production Time = 25
+
+
+Comparison
+Parameter	Normal case	Disruption case
+Line 1 Station 2 time	5	30
+Selected line at Station 1	Line 1	Line 2
+Selected line at Station 2	Line 1	Line 2
+Selected line at Station 3	Line 1	Line 1
+Selected line at Station 4	Line 1	Line 1
+Minimum production time	19	25
+
+Calculation of the new optimal route:
+\[
+3+5+6+3+4+2+2=25
+\]
+
+Explanation:
+- Enter Line 2: 3
+- Station 1 on Line 2: 5
+- Station 2 on Line 2: 6
+- Transfer from Line 2 to Line 1: 3
+- Station 3 on Line 1: 3
+- Station 4 on Line 1: 2
+- Exit Line 1: 3
+Total:
+\[
+3+5+6+3+4+2+2=25
+\]
+
+Optimal route changed
+Interpretation:
+
+The machine slowdown made Line 1 expensive at Station 2. Therefore, the algorithm selected Line 2 for the first two stations and transferred to Line 1 at Station 3.
+
+The minimum production time increased from 19 to 25. The new route is optimal because the DP algorithm compares both possible decisions at every station and selects the lower accumulated cost.
+5. Final Result
+The Assembly Line Scheduling problem was successfully implemented using Dynamic Programming in Python.
+The experiments demonstrated:
+1. The minimum production time for the normal case is 19.
+2. The program displays stay and transfer decisions at every station.
+3. Increasing the transfer time did not change the optimal route.
+4. Increasing the processing time at Station 2 caused the optimal route to change.
+5. The new minimum production time became 25.
+6. The extension to three assembly lines requires additional DP states, transitions and predecessor information.
+Conclusion: Dynamic Programming helps manufacturing companies minimize production time by selecting the most efficient assembly-line route. It can also adapt to changing transfer costs and machine disruptions by recalculating the optimal route.
+6. Submission Evidence Checklist
+Task 4 evidence
+0/9
+[ ] Python source code
+[ ] Normal input dataset
+[ ] Normal execution output
+[ ] DP decision table screenshot
+[ ] Optimal route reconstruction screenshot
+[ ] Transfer-time prediction and modified output
+[ ] Machine-disruption prediction and modified output
+[ ] Comparison of normal and disrupted routes
+[ ] Three-line engineering extension
