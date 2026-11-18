@@ -1,0 +1,235 @@
+TASK 2 – GREEDY vs DYNAMIC PROGRAMMING
+Build It, Break It, Explain It (9 Marks)
+Programming Language: Python
+Algorithms:
+- Solution A – Fractional Knapsack using Greedy Strategy.
+- Solution B – 0/1 Knapsack using Dynamic Programming.
+1. Problem Analysis
+A logistics company has a vehicle with limited carrying capacity. Each item has an Item ID, Weight and Value.
+
+The objective is to select items to maximize the total value without exceeding the vehicle capacity.
+
+Value-to-weight ratio:
+\[
+Ratio=\frac{Value}{Weight}
+\]
+
+The two methods work differently:
+Fractional Knapsack	0/1 Knapsack
+Uses Greedy strategy	Uses Dynamic Programming
+Items can be divided	Items cannot be divided
+Selects based on value/weight ratio	Considers different combinations
+Can take a fraction of an item	Takes the whole item or rejects it
+
+2. Source Code – Both Implementations
+The following program implements both algorithms and displays the selected items, decision sequence, operation counts and memory requirements.
+# TASK 2: GREEDY vs DYNAMIC PROGRAMMING# ------------------------------------# SOLUTION A: FRACTIONAL KNAPSACK# ------------------------------------def fractional_knapsack(items, capacity):    print("\nFRACTIONAL KNAPSACK")    print("Decision Sequence:")    # Sort by value-to-weight ratio    sorted_items = sorted(        items,        key=lambda x: x[2] / x[1],        reverse=True    )    total_value = 0    total_weight = 0    operations = 0    selected = []    for item in sorted_items:        item_id, weight, value = item        ratio = value / weight        operations += 1        print("\nItem:", item_id)        print("Ratio:", round(ratio, 2))        if capacity >= weight:            capacity -= weight
+
+
+
+2.1 Normal Case – Fractional Knapsack (2 Marks)
+Input dataset:
+Item ID	Weight	Value	Value/Weight Ratio
+A	10	60	6.0
+B	20	100	5.0
+C	30	120	4.0
+
+Vehicle capacity = 50 kg
+
+Greedy decision sequence:
+1. Item A has the highest ratio (6). Select the complete item.
+2. Item B has the next highest ratio (5). Select the complete item.
+3. Item C has ratio 4. Only 20 kg capacity remains, so select 20/30 of the item.
+Fractional result
+FRACTIONAL KNAPSACK
+
+Item A
+Ratio: 6.0
+Decision: Full item selected
+
+Item B
+Ratio: 5.0
+Decision: Full item selected
+
+Item C
+Ratio: 4.0
+Decision: Fraction selected = 0.67
+
+Selected Items:
+('A', 1, 10, 60)
+('B', 1, 20, 100)
+('C', 0.6667, 20, 80)
+
+Total Weight: 50
+Total Value: 240
+Operations: 3
+
+
+Calculation:
+\[
+60+100+80=240
+\]
+
+Therefore, the maximum value is 240.
+
+For this dataset, the value-to-weight greedy strategy produces the optimal fractional solution.
+2.2 Break the Greedy Intuition (3 Marks)
+Now consider the same dataset, but change the requirement:
+
+Items cannot be divided. Each item must be selected completely or rejected.
+
+This is the 0/1 Knapsack problem.
+Greedy 0/1 implementation
+Add the following function to the previous Python program. It applies the same value-to-weight ratio strategy but selects only complete items.
+def greedy_zero_one(items, capacity):    sorted_items = sorted(        items,        key=lambda x: x[2] / x[1],        reverse=True    )    total_value = 0    total_weight = 0    selected = []    print("\nGREEDY 0/1 KNAPSACK")    for item_id, weight, value in sorted_items:        ratio = value / weight        if total_weight + weight <= capacity:            selected.append(item_id)            total_weight += weight            total_value += value            print(item_id, "Selected | Ratio:", ratio)        else:            print(item_id, "Rejected | Ratio:", ratio)    print("Selected Items:", selected)    print("Total Weight:", total_weight)    print("Total Value:", total_value)    return total_value
+
+
+
+Greedy decision sequence
+Greedy failure
+GREEDY 0/1 KNAPSACK
+
+Item A Selected | Ratio: 6.0
+Item B Selected | Ratio: 5.0
+Item C Rejected | Ratio: 4.0
+
+Selected Items: ['A', 'B']
+Total Weight: 30
+Total Value: 160
+
+
+Why does Greedy fail?
+- First commitment: Greedy selects item A because it has the highest ratio.
+- Second commitment: It selects item B.
+- Remaining capacity is 20 kg.
+- Item C weighs 30 kg, so it is rejected.
+- The total value is only 160.
+The first greedy commitment to item A prevents the optimal combination A from being replaced by the more valuable combination B and C.
+Dynamic Programming result
+The DP algorithm checks different combinations and finds:
+Item	Weight	Value	Decision
+A	10	60	Rejected
+B	20	100	Selected
+C	30	120	Selected
+
+0/1 KNAPSACK USING DP
+
+Selected Items:
+('B', 20, 100)
+('C', 30, 120)
+
+Total Weight: 50
+Total Value: 220
+DP States Evaluated: 153
+
+
+Calculation:
+\[
+100+120=220
+\]
+
+Greedy vs DP result
+Greedy 0/1
+160
+Weight used: 30 kg
+
+
+Dynamic Programming
+220
+Weight used: 50 kg
+
+
+
+\[
+GreedyResult\neq DPOptimum
+\]
+
+\[
+220-160=60
+\]
+
+The greedy method loses 60 units of value compared with the DP solution.
+\[
+\text{Loss Percentage}=\frac{60}{220}\times100
+=27.27\%
+\]
+
+Interpretation: This experiment proves that selecting items only by their value-to-weight ratio does not always produce an optimal solution when items cannot be divided.
+
+2.3 Engineering Comparison (2 Marks)
+Comparison	Greedy Fractional	Greedy 0/1	DP 0/1
+Strategy	Ratio sorting	Ratio sorting	Table-based optimization
+Sorting	Required	Required	Not required
+Main operations	Item decisions	Item decisions	153 DP states
+Time complexity	\(O(n\log n)\)	\(O(n\log n)\)	\(O(nW)\)
+Auxiliary space	\(O(n)\)	\(O(n)\)	\(O(nW)\)
+Solution quality	Optimal	Not always optimal	Optimal
+Item division	Allowed	Not allowed	Not allowed
+
+Here, n represents the number of items and W represents the integer vehicle capacity.
+
+Engineering observations:
+1. Computational work: Greedy sorts the items and makes quick selection decisions. DP evaluates 153 states for the three-item, 50-capacity example.
+2. Memory requirement: Greedy requires storage for sorted items and selected items. DP stores a two-dimensional table containing (n+1) × (W+1) entries.
+3. Solution quality: Fractional Greedy achieves 240, while Greedy 0/1 achieves only 160. DP 0/1 achieves 220.
+4. Optimality guarantee: Fractional Greedy is optimal for fractional knapsack. DP guarantees the optimum for 0/1 knapsack with integer weights and capacity.
+Memory comparison for this experiment
+Algorithm	Main storage
+Greedy	Linear in 3 items
+DP	4 × 51 = 204 table entries
+
+The DP table contains 204 entries, of which 153 are updated during the computation.
+2.4 Changed Requirement – Extremely Fast Decision (2 Marks)
+New management requirement:
+
+"The decision must be returned extremely quickly. A near-optimal result may be acceptable."
+Strategy selection
+Based on our experiments:
+- Greedy makes decisions using the value-to-weight ratio.
+- It requires sorting and checking items.
+- DP evaluates many states and requires more memory.
+- Greedy 0/1 is faster in terms of computational work, but it may lose solution quality.
+Observed results:
+Method	Total Value	Decision
+Fractional Greedy	240	Optimal for fractional items
+Greedy 0/1	160	Fast but not optimal
+DP 0/1	220	Optimal for indivisible items
+
+My engineering decision
+I would select Greedy 0/1 when:
+- Items cannot be divided.
+- The response must be extremely fast.
+- A loss in solution quality is acceptable.
+However, our experiment shows a 27.27% loss compared with DP. Therefore, I would not assume that the greedy result is always near-optimal.
+
+If the company requires a minimum acceptable value, the system should compare the greedy result against that threshold and use DP when the greedy result is insufficient.
+
+For fractional items, I would choose Fractional Greedy because it is both fast and optimal.
+3. Final Result
+The Fractional Knapsack and 0/1 Knapsack problems were successfully implemented using Greedy and Dynamic Programming algorithms in Python.
+
+The experiments demonstrated that:
+1. Fractional Greedy achieved an optimal value of 240.
+2. Greedy 0/1 achieved a value of 160.
+3. Dynamic Programming achieved an optimal value of 220.
+4. The greedy approach failed for the constructed 0/1 counterexample.
+5. DP required more computational work and memory but guaranteed the optimal result.
+6. Greedy was suitable when quick decisions were more important than guaranteed optimality.
+Conclusion: Greedy and Dynamic Programming have different advantages. Greedy is suitable for fast decisions, whereas Dynamic Programming is suitable when the best possible combination of indivisible items is required.
+
+4. Evidence Checklist for Submission
+Submission evidence
+0/8 completed
+[ ] Both Python implementations (Fractional and 0/1 DP)
+[ ] Greedy 0/1 counterexample implementation
+[ ] Normal dataset with item IDs, weights and values
+[ ] Fractional Knapsack execution screenshot
+[ ] Greedy failure execution screenshot
+[ ] DP table and selected-item screenshot
+[ ] Computational work and memory comparison
+[ ] Changed requirement interpretation
+fractional_knapsack(items, capacity)
+greedy_zero_one(items, capacity)
+zero_one_knapsack(items, capacity)
+
+Important code execution note: After defining all three functions, call them using:
