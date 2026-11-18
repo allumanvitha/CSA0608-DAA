@@ -1,0 +1,206 @@
+TASK 5 – Perform Asymptotic Analysis
+3 Marks
+1. Introduction
+Asymptotic analysis is used to study how the running time of an algorithm increases when the input size becomes very large.
+
+The three algorithms used for locating student registration numbers are:
+1. Linear Search
+2. Recursive Binary Search
+3. Hash Table Search
+The notations used are:
+- Big-O (O): Represents the upper bound or worst-case growth.
+- Omega (Ω): Represents the lower bound or best-case growth.
+- Theta (Θ): Represents the tight bound when the upper and lower bounds have the same growth rate.
+2. Linear Search – Asymptotic Analysis
+Linear Search checks registration numbers one by one until the target is found.
+
+Best Case:
+
+When the target is in the first position, only one comparison is required.
+\[
+\Omega(1)
+\]
+
+Worst Case:
+
+When the target is in the last position or is absent, all n elements are checked.
+\[
+O(n)
+\]
+
+Average Case:
+
+The average number of comparisons is:
+\[
+C(n)=\frac{n+1}{2}
+\]
+
+Ignoring constants and smaller terms:
+\[
+\Theta(n)
+\]
+
+Interpretation:
+
+When the dataset increases from 1,000 to 1,000,000 registration numbers, the worst-case number of comparisons increases from 1,000 to 1,000,000.
+
+Therefore, Linear Search becomes slower for very large datasets because its work increases directly with the number of records.
+3. Recursive Binary Search – Asymptotic Analysis
+Binary Search divides the sorted registration numbers into two halves after every comparison.
+
+Best Case:
+
+The target is found at the middle position in the first comparison.
+\[
+\Omega(1)
+\]
+
+Worst Case:
+
+The search area is repeatedly divided into two halves.
+\[
+O(\log_2 n)
+\]
+
+Average Case:
+
+The number of comparisons also grows logarithmically.
+\[
+\Theta(\log n)
+\]
+
+Interpretation:
+
+For 1,000 records:
+\[
+\log_2 1000\approx 10
+\]
+
+For 1,000,000 records:
+\[
+\log_2 1000000\approx 20
+\]
+
+Even though the dataset increases 1,000 times, the number of comparisons increases only from approximately 10 to 20.
+
+Binary Search is therefore highly efficient for large datasets, provided the registration numbers are sorted.
+
+Preprocessing consideration:
+
+If sorting is required, Merge Sort takes:
+\[
+O(n\log n)
+\]
+
+Thus, the total cost of sorting and one search is:
+\[
+O(n\log n)+O(\log n)=O(n\log n)
+\]
+
+If the data is already sorted, searching alone takes \(O(\log n)\).
+4. Hash Table Search – Asymptotic Analysis
+Hash Table Search calculates an index using a hash function and searches the corresponding bucket.
+
+Best Case:
+
+The target is the first element in the selected bucket.
+\[
+\Omega(1)
+\]
+
+Average Case:
+
+When the hash function distributes registration numbers evenly and the load factor is controlled:
+\[
+\Theta(1)
+\]
+
+Worst Case:
+
+When all registration numbers produce the same hash index, the algorithm may check every element.
+\[
+O(n)
+\]
+
+Interpretation:
+
+For a well-designed hash table, searching 1,000 registration numbers and searching 1,000,000 registration numbers can both require approximately constant average search time.
+
+However, collisions and poor hash distribution can increase the number of comparisons.
+
+Preprocessing consideration:
+
+Building the hash table requires inserting all registration numbers.
+\[
+P(n)=O(n)
+\]
+
+Therefore, the total cost of building the table and performing one search is:
+\[
+O(n)+O(1)=O(n)
+\]
+
+When the hash table is already built, each average search takes approximately \(O(1)\).
+
+5. Overall Asymptotic Comparison
+Algorithm	Best Case	Average Case	Worst Case
+Linear Search	Ω(1)	Θ(n)	O(n)
+Binary Search	Ω(1)	Θ(log n)	O(log n)
+Hash Table Search	Ω(1)	Θ(1)	O(n)
+
+6. Growth Behaviour for Large Datasets
+The following table compares the approximate number of operations in the worst case or under ideal average-case assumptions.
+Input size	Linear Search (worst)	Binary Search (worst)	Hash Search (average)
+1,000	1,000	10	Approximately 1
+10,000	10,000	14	Approximately 1
+100,000	100,000	17	Approximately 1
+1,000,000	1,000,000	20	Approximately 1
+
+
+
+
+O(1)
+O(log n)
+O(n)
+O(n log n)
+O(n²)
+O(2ⁿ)
+
+10203040506050100150200Input size nGrowth
+
+
+
+
+
+\(O(1):\;\text{1},\quad O(\log_2 n):\;\text{4}\)
+\(O(n):\;\text{16},\quad O(n\log_2 n):\;\text{64}\)
+\(O(n^2):\;\text{256},\quad O(2^n):\;\text{65,536}\)
+
+View
+\(\text{All curves}\)\(O(1)\)\(O(\log_2 n)\)\(O(n)\)\(O(n\log_2 n)\)\(O(n^2)\)\(O(2^n)\)
+
+
+
+
+\(n\)
+48163264
+
+
+
+
+
+
+
+
+
+
+Give feedback
+
+7. Final Result
+Asymptotic analysis shows that Linear Search has linear growth, Binary Search has logarithmic growth, and Hash Table Search has constant average search growth when collisions are controlled.
+
+For a student registration system containing more than one million records, Binary Search and Hash Table Search are generally more efficient than Linear Search for repeated searches.
+- Linear Search: Suitable for small or unsorted datasets.
+- Binary Search: Suitable for large, sorted datasets.
+- Hash Table Search: Suitable for frequent registration-number searches when fast average lookup is required.
+The choice of algorithm should consider not only searching time but also sorting cost, hash-table construction, memory usage and how frequently the data changes.
