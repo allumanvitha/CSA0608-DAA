@@ -1,0 +1,83 @@
+ASK 8 – Implement and Test the Algorithms
+The following Python program implements all three algorithms selected in Task 1:
+1. Linear Search – Iterative, Brute Force.
+2. Recursive Binary Search – Divide and Conquer.
+3. Hash Table Search – Hashing with separate chaining.
+It tests the same registration-number datasets at 1,000, 10,000, 100,000 and 1,000,000 records. It records execution time and the number of key comparisons.
+
+The program also:
+- Checks whether all three algorithms return the correct result.
+- Measures sorting and hash-table construction separately.
+- Saves experimental results in a CSV file.
+- Generates performance graphs.
+1. Python source code
+Save the following program as registration_search.py in VS Code.
+import random        return -1, 0    mid = (low + high) // 2    comparisons = 1    if data[mid] == target:        return mid, comparisons    comparisons += 1    if target < data[mid]:        result, count = binary_search(            data, low, mid - 1, target        )    else:        result, count = binary_search(            data, mid + 1, high, target        )    return result, comparisons + count# --------------------------------# 3. HASH TABLE SEARCH# Separate chaining# --------------------------------def build_hash_table(data, table_size):    hash_table = {}    for number in data:        index = number % table_size        if index not in hash_table:            hash_table[index] = []        hash_table[index].append(number)    return hash_tabledef hash_search(hash_table, table_size, target):    index = target % table_size    comparisons = 0    if index in hash_table:        for number in hash_table[index]:            comparisons += 1            if number == target:                return True, comparisons    return False, comparisons# --------------------------------# 4. EXPERIMENTAL TESTING# --------------------------------sizes = [1000, 10000, 100000, 1000000]results = []for n in sizes:    print("\nTesting dataset size:", n)    # Generate the same registration numbers    data = list(range(1000000001, 1000000001 + n))    # Shuffle the original dataset
+
+
+
+2. Testing procedure
+1. Open VS Code.
+2. Create a file named registration_search.py.
+3. Paste the above Python code.
+4. Install Matplotlib using:
+pip install matplotlib
+
+
+5. Run the program:
+python registration_search.py
+
+
+6. Wait until all four dataset sizes are tested.
+7. Check the generated CSV file and two graph images in the same folder.
+3. Test cases
+Test case	Input condition	Expected result
+TC01	Target is present	Registration number found
+TC02	Target is absent	Registration number not found
+TC03	Target is first element	Linear Search finds it immediately
+TC04	Target is last element	Linear Search checks all elements
+TC05	Target is in middle of sorted list	Binary Search finds it
+TC06	Dataset contains 1,000 records	All algorithms return correct result
+TC07	Dataset contains 1,000,000 records	All algorithms return correct result
+
+The main experiment uses the last element of the shuffled dataset as the target. This gives Linear Search its worst-case condition. Binary Search and Hash Table Search use the same target and equivalent registration-number data.
+4. Expected output format
+Your actual execution output will look similar to this structure. Execution times will vary depending on your computer.
+Testing dataset size: 1000
+
+Linear Search:
+Comparisons: 1000
+Time: measured_time
+
+Binary Search:
+Comparisons: measured_count
+Sorting Time: measured_time
+Search Time: measured_time
+
+Hash Table:
+Comparisons: measured_count
+Building Time: measured_time
+Search Time: measured_time
+
+All algorithms returned the correct result.
+
+EXPERIMENT COMPLETED
+Results saved in search_results.csv
+Graphs saved successfully.
+
+
+The exact comparison counts for the main experiment are:
+Input size	Linear comparisons	Binary comparisons	Hash comparisons
+1,000	1,000	10	1
+10,000	10,000	14	1
+100,000	100,000	17	1
+1,000,000	1,000,000	20	1
+
+These counts follow from the selected data and search target in the program. The hash table has no collisions for these generated values because of the chosen table size.
+5. Additional test: Registration number not found
+To test unsuccessful searches, add this code inside the for n in sizes: loop, after the three successful searches:
+    # Test an absent registration number    missing = 9999999999    p1, c1 = linear_search(data, missing)    p2, c2 = binary_search(        sorted_data, 0, n - 1, missing    )    p3, c3 = hash_search(        hash_table, table_size, missing    )    assert p1 == -1    assert p2 == -1    assert p3[0] is False    print("Absent target test: Passed")
+
+
+
+Correction for the last assertion: The hash search returns a tuple, so p3[0] is False is correct.
