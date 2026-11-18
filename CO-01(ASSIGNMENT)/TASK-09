@@ -1,0 +1,22 @@
+Task 9 – Experimental performance table
+After running your program, copy the actual execution times from search_results.csv into this report table.
+Input size	Linear time (s)	Binary search time (s)	Hash search time (s)
+1,000	Your result	Your result	Your result
+10,000	Your result	Your result	Your result
+100,000	Your result	Your result	Your result
+1,000,000	Your result	Your result	Your result
+
+Also record preprocessing times separately:
+Input size	Binary sorting time (s)	Hash table construction time (s)
+1,000	Your result	Your result
+10,000	Your result	Your result
+100,000	Your result	Your result
+1,000,000	Your result	Your result
+
+Do not fill in invented execution times. Use the values measured on your computer.
+7. Analysis of experimental results
+- Linear Search: The number of comparisons increases directly with the number of registration numbers. It performs poorly when the target is at the end or absent.
+- Binary Search: The number of comparisons increases slowly because the search area is divided into two halves in each recursive call. Sorting time must be considered separately.
+- Hash Table Search: The average number of comparisons remains nearly constant when the hash function distributes registration numbers evenly. Building the hash table requires additional time and memory.
+8. Result
+The three searching algorithms were implemented and tested using datasets containing 1,000, 10,000, 100,000 and 1,000,000 registration numbers. Their correctness was checked using successful and unsuccessful searches. Execution time and comparison counts were recorded for performance analysis. The results can be used to compare the experimental behaviour with the theoretical complexity derived in Tasks 3–7.
