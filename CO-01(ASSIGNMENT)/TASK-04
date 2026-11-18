@@ -1,0 +1,133 @@
+TASK 4 – Analyse Best, Average and Worst-Case Behaviour
+4 Marks
+1. Introduction
+Best, average and worst-case analysis explains how an algorithm performs under different input conditions.
+
+The three proposed algorithms are Linear Search, Recursive Binary Search and Hash Table Search. Their performance depends on the position of the target registration number, the arrangement of data and the distribution of hash values.
+2. Approach 1: Linear Search (Iterative)
+Best Case:
+- The target registration number is present in the first position.
+- The algorithm compares the target with the first element and immediately finds it.
+- Only one comparison is performed.
+\[
+C_{\text{best}}(n)=1
+\]
+
+Average Case:
+- The target registration number is present at any random position in the list.
+- The algorithm may check approximately half of the elements before finding the target.
+- Assuming every position is equally likely, the average comparisons are:
+\[
+C_{\text{avg}}(n)=\frac{1+2+3+\cdots+n}{n}
+\]
+
+\[
+C_{\text{avg}}(n)=\frac{n+1}{2}
+\]
+
+Worst Case:
+- The target is present in the last position or is not available in the list.
+- The algorithm must check every registration number.
+- Therefore, n comparisons are required.
+\[
+C_{\text{worst}}(n)=n
+\]
+
+Explanation:
+
+Linear Search performance depends on the position of the target. If the target is at the beginning, searching is fast. If it is at the end or absent, the algorithm checks the complete list.
+
+3. Approach 2: Recursive Binary Search
+Best Case:
+- The target registration number is exactly in the middle of the sorted list.
+- The algorithm finds it in the first comparison.
+- Only one comparison is required.
+\[
+C_{\text{best}}(n)=1
+\]
+
+Average Case:
+- The target may be located at different positions in the sorted list.
+- Binary Search repeatedly divides the list into two halves.
+- After each comparison, approximately half of the remaining elements are eliminated.
+The number of comparisons grows approximately as:
+\[
+C_{\text{avg}}(n)=O(\log_2 n)
+\]
+
+Worst Case:
+- The target is located near the end of the search path or is not present.
+- The algorithm continues dividing the search area until the range becomes empty or the target is found.
+- The maximum number of comparisons is approximately:
+\[
+C_{\text{worst}}(n)=\lfloor\log_2 n\rfloor+1
+\]
+
+Explanation:
+
+Binary Search performs efficiently because it eliminates half of the remaining elements after each comparison. Its performance depends on the sorted arrangement of registration numbers. If the data is not sorted, Binary Search cannot be applied correctly.
+
+4. Approach 3: Hash Table Search
+Best Case:
+- The target registration number is stored in the calculated hash bucket.
+- It is the first element checked in that bucket.
+- Only one equality comparison is required.
+\[
+C_{\text{best}}(n)=1
+\]
+
+Average Case:
+- The hash function distributes registration numbers evenly among buckets.
+- The number of collisions is limited.
+- The algorithm searches only a small bucket instead of checking the entire dataset.
+With a suitable hash table and load factor:
+\[
+C_{\text{avg}}(n)=O(1+\alpha)
+\]
+
+where:
+\[
+\alpha=\frac{n}{m}
+\]
+
+Here, n is the number of registration numbers and m is the number of buckets.
+
+If the load factor remains bounded, average search time is approximately constant.
+
+Worst Case:
+- Many registration numbers produce the same hash index.
+- All registration numbers may be stored in one bucket.
+- The algorithm may need to compare the target with every element in that bucket.
+\[
+C_{\text{worst}}(n)=n
+\]
+
+Explanation:
+
+Hash Table Search is usually very fast because the hash function directly identifies the bucket where the registration number should be stored. However, poor hash distribution and collisions increase the number of comparisons.
+
+5. Comparison of Best, Average and Worst Cases
+Algorithm	Best Case	Average Case	Worst Case
+Linear Search	1 comparison	(n+1)/2 comparisons	n comparisons
+Binary Search	1 comparison	O(log n)	O(log n)
+Hash Table	1 comparison	O(1), with bounded load factor	n comparisons
+
+6. Example with Input Size
+Consider a dataset containing 1,000 registration numbers.
+Algorithm	Best Case	Average Case (approx.)	Worst Case
+Linear Search	1	500	1,000
+Binary Search	1	Logarithmic number of comparisons	10
+Hash Table	1	Approximately 1 (ideal distribution)	1,000
+
+For Binary Search, the maximum number of comparisons is:
+\[
+\lfloor\log_2 1000\rfloor+1=10
+\]
+
+The Hash Table values assume a suitable hash function and table size; the average is not guaranteed to be exactly one comparison.
+7. Final Result
+The analysis shows that each algorithm behaves differently under different input conditions.
+- Linear Search: Its performance depends on the position of the target registration number.
+- Binary Search: It provides efficient searching because it divides the sorted list into two halves.
+- Hash Table Search: It provides fast average searching when registration numbers are distributed evenly, but collisions can increase execution time.
+Therefore, the best algorithm depends on the dataset size, data arrangement, preprocessing requirements and collision behaviour.
