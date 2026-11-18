@@ -1,0 +1,184 @@
+TASK 5 – THREE GREEDY ENGINEERS, ONE NETWORK
+Kruskal’s Algorithm, Prim’s Algorithm and Borůvka’s Algorithm
+1. Aim
+To implement Kruskal’s, Prim’s and Borůvka’s algorithms using the same connected weighted graph, find the Minimum Spanning Tree (MST), display the edge-selection sequence, and compare their behaviour in different deployment environments.
+2. Graph used
+Consider a company with six facilities: A, B, C, D, E and F. The edges represent possible network connections, and their weights represent installation costs.
+
+Base graph – 6 vertices and 9 weighted edges
+Edge	Cost
+A–B	4
+A–C	3
+B–C	1
+B–D	2
+C–D	4
+C–E	5
+D–E	2
+D–F	3
+E–F	1
+
+All vertices are connected, so an MST can be constructed. An MST for six vertices must contain exactly five edges.
+3. Python source code
+The following program implements all three algorithms and displays the order in which edges are selected.
+# TASK 5: Kruskal, Prim and Boruvka Algorithmsvertices = ["A", "B", "C", "D", "E", "F"]edges = [    ("A", "B", 4),    ("A", "C", 3),    ("B", "C", 1),    ("B", "D", 2),    ("C", "D", 4),    ("C", "E", 5),    ("D", "E", 2),    ("D", "F", 3),    ("E", "F", 1)]# ---------- KRUSKAL'S ALGORITHM ----------def find(parent, x):    if parent[x] != x:        parent[x] = find(parent, parent[x])    return parent[x]def union(parent, rank, x, y):    root_x = find(parent, x)    root_y = find(parent, y)    if root_x == root_y:        return False    if rank[root_x] < rank[root_y]:        parent[root_x] = root_y    elif rank[root_x] > rank[root_y]:
+
+
+
+4. Expected output and edge-selection traces
+A. Kruskal’s Algorithm
+Next safe edge: Select the lowest-weight edge that does not create a cycle.
+
+Information maintained:
+- Sorted edge list.
+- Disjoint sets of connected vertices.
+- Parent and rank arrays for cycle detection.
+Construction sequence:
+Step	Selected edge	Cost	Reason
+1	B–C	1	Lowest cost
+2	E–F	1	Connects a separate component
+3	B–D	2	Does not create a cycle
+4	D–E	2	Connects two components
+5	A–C	3	Adds facility A
+
+MST cost = 9
+Final MST edges: B–C, E–F, B–D, D–E, A–C.
+
+Kruskal grows the MST by joining separate components. It rejects an edge if its endpoints are already connected.
+B. Prim’s Algorithm
+Next safe edge: Select the minimum-weight edge connecting a visited vertex to an unvisited vertex.
+
+Information maintained:
+- Visited vertices.
+- Candidate edges connecting visited and unvisited vertices.
+- Current MST edges and total cost.
+Starting vertex: A.
+Step	Selected edge	Cost	Connected vertices
+1	A–C	3	A, C
+2	B–C	1	A, B, C
+3	B–D	2	A, B, C, D
+4	D–E	2	A, B, C, D, E
+5	E–F	1	A, B, C, D, E, F
+
+MST cost = 9
+Final MST edges: A–C, B–C, B–D, D–E, E–F.
+
+Prim grows one connected tree from the starting vertex by adding the cheapest edge leading outside the current tree.
+C. Borůvka’s Algorithm
+Next safe edge: Each connected component selects its cheapest outgoing edge.
+
+Information maintained:
+- Current connected components.
+- Cheapest outgoing edge for each component.
+- Disjoint-set structure to merge components and avoid cycles.
+Construction sequence:
+Round	Selected edges	Cost
+1	A–C, B–C, B–D, E–F	3 + 1 + 2 + 1 = 7
+2	D–E	2
+
+MST cost = 9
+Final MST edges: A–C, B–C, B–D, E–F, D–E.
+
+Borůvka grows multiple components simultaneously. Each component independently finds its cheapest outgoing edge, and the components are merged in rounds.
+5. Stress test – Multiple MSTs with the same cost
+Now modify the graph by changing the cost of edge A–B from 4 to 3.
+Edge	Original cost	Modified cost
+A–B	4	3
+A–C	3	3
+B–C	1	1
+B–D	2	2
+C–D	4	4
+C–E	5	5
+D–E	2	2
+D–F	3	3
+E–F	1	1
+
+Now there are two possible MSTs.
+
+MST 1
+Edge	Cost
+A–C	3
+B–C	1
+B–D	2
+D–E	2
+E–F	1
+Total	9
+
+MST 2
+Edge	Cost
+A–B	3
+B–C	1
+B–D	2
+D–E	2
+E–F	1
+Total	9
+
+Both MSTs have the same minimum cost: 9
+Can the algorithms return different edge sets?
+Yes. An MST is not always unique. When two edges have equal weights, different tie-breaking decisions can produce different valid MSTs.
+- Kruskal may select A–B before A–C when the edges have equal weight.
+- Prim may select A–C or A–B depending on its starting vertex and tie-breaking rule.
+- Borůvka may also select either edge when a component has multiple cheapest outgoing edges.
+Both edge sets are correct because they connect all six vertices, contain five edges, have no cycles and have the same minimum total cost.
+
+Observation: The edge set may differ, but the minimum total cost remains the same.
+6. Industry decision – Choosing an algorithm
+Environment	Suitable algorithm	Reason based on behaviour
+A. Sparse network	Kruskal	When there are relatively few edges, sorting the edge list is manageable. Disjoint sets efficiently detect cycles while joining separate components.
+B. Dense network	Prim	A dense network has many possible connections. Prim can grow one tree by repeatedly choosing the cheapest edge crossing from visited to unvisited vertices. An adjacency matrix makes finding the minimum candidate straightforward.
+C. Large network using parallel/distributed resources	Borůvka	Different components can independently find their cheapest outgoing edges. These choices can be processed in parallel and merged in rounds, making the algorithm suitable for distributed processing.
+
+Important implementation characteristics
+Kruskal
+- Works with a sorted list of edges.
+- Uses Disjoint Set Union (DSU) for cycle detection.
+- Convenient when the network has fewer edges.
+- Sorting the edges is its main preparation step.
+Prim
+- Maintains one growing connected tree.
+- Uses a priority queue with an adjacency list, or an adjacency matrix for dense graphs.
+- Useful when the network has many edges and a connected tree can be grown efficiently.
+- Its behaviour depends on the starting vertex, although the final MST cost remains minimum.
+Borůvka
+- Maintains several connected components.
+- Each component searches for its cheapest outgoing edge.
+- Multiple component searches can happen simultaneously.
+- Useful when the network is large and edge processing can be distributed across machines.
+7. Complexity comparison
+Let V represent the number of vertices and E represent the number of edges.
+Algorithm	Typical time complexity	Main data structure
+Kruskal	\(O(E\log E)\)	Sorted edge list and DSU
+Prim	\(O(E\log V)\) with adjacency list and priority queue	Adjacency list and priority queue
+Borůvka	\(O(E\log V)\)	Edge list and DSU
+
+The actual performance also depends on graph density, memory usage, sorting cost, and whether the work can be performed in parallel.
+8. Result
+Kruskal’s, Prim’s and Borůvka’s algorithms were implemented using the same connected weighted graph. All three constructed a Minimum Spanning Tree with five edges and a total cost of 9.
+
+The modified graph demonstrated that multiple MSTs can have different edge sets but the same minimum total cost. Kruskal is convenient for sparse networks, Prim is suitable for dense networks, and Borůvka is useful for large networks where parallel processing is possible.
+9. Additional evidence – Verify the two MSTs
+Use this small Python snippet after modifying the edge weight. It verifies that both edge sets are valid and have the same cost.
+# Modified edge: A-B changes from 4 to 3mst1 = [    ("A", "C", 3),    ("B", "C", 1),    ("B", "D", 2),    ("D", "E", 2),    ("E", "F", 1)]mst2 = [    ("A", "B", 3),    ("B", "C", 1),    ("B", "D", 2),    ("D", "E", 2),    ("E", "F", 1)]print("MST 1 cost:", sum(edge[2] for edge in mst1))print("MST 2 cost:", sum(edge[2] for edge in mst2))print("MST 1 edges:", mst1)print("MST 2 edges:", mst2)
+
+
+
+Expected output:
+MST 1 cost: 9
+MST 2 cost: 9
+
+MST 1 edges: [('A', 'C', 3), ('B', 'C', 1),
+('B', 'D', 2), ('D', 'E', 2), ('E', 'F', 1)]
+
+MST 2 edges: [('A', 'B', 3), ('B', 'C', 1),
+('B', 'D', 2), ('D', 'E', 2), ('E', 'F', 1)]
+
+
+10. Evidence to include in your assignment
+Take screenshots from VS Code or your Python terminal showing:
+1. Kruskal source code and its edge-selection trace.
+2. Prim source code and its edge-selection trace.
+3. Borůvka source code and its round-by-round trace.
+4. Final MST edges and total cost for all three algorithms.
+5. Modified graph with A–B changed to cost 3.
+6. The two different MST edge sets with total cost 9.
+7. Your industry decision and complexity comparison.
+Note: In the Borůvka trace produced by the supplied code, Round 1 prints B–C, E–F, B–D and A–C, in that order. Round 2 prints D–E. This is the same MST described above.
