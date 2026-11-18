@@ -1,0 +1,265 @@
+TASK 6 – LAST-MILE DELIVERY ROUTE OPTIMISATION
+Travelling Salesperson Problem (TSP) Using Dynamic Programming – 9 Marks
+6.1 – Model the optimisation problem
+Aim: To find the minimum-cost delivery route using Dynamic Programming. The vehicle starts from the distribution hub, visits every delivery location exactly once, and returns to the hub.
+Computational model
+Component	Description
+Input	Distribution hub, delivery locations and travel-cost matrix
+Output	Minimum-cost route and its total travel cost
+Objective	Minimise the total travel cost
+Constraints	Start and finish at the hub; visit every delivery location exactly once
+
+Why is the current location alone insufficient?
+
+Suppose the vehicle is currently at location C.
+- Route 1: Hub → A → C
+- Route 2: Hub → B → C
+Both routes end at C, but they have visited different locations. The remaining locations are also different.
+
+Therefore, the algorithm must remember:
+1. The locations already visited.
+2. The current location.
+3. The minimum cost of reaching that state.
+This is why TSP uses a state containing both the visited-location set and the current location.
+6.2 – Design the DP state
+Let:
+- \(S\) = set of delivery locations already visited.
+- \(j\) = current delivery location.
+- \(DP[S][j]\) = minimum cost of starting from the hub, visiting all locations in \(S\), and ending at location \(j\).
+Let \(c(i,j)\) represent the travel cost from location \(i\) to location \(j\). The hub is represented by 0.
+Base condition
+When only one delivery location \(j\) has been visited:
+\[
+DP[\{j\}][j]=c(0,j)
+\]
+
+This means the vehicle travels directly from the hub to location \(j\).
+Recurrence relation
+For a set \(S\) containing more than one location:
+\[
+DP[S][j]=
+\min_{k\in S,\ k\ne j}
+\left(DP[S-\{j\}][k]+c(k,j)\right)
+\]
+
+Explanation:
+- Consider every possible previous location \(k\).
+- Remove the current location \(j\) from the visited set.
+- Add the travel cost from \(k\) to \(j\).
+- Choose the minimum-cost option.
+Final solution
+After visiting every delivery location, the vehicle must return to the hub.
+\[
+\boxed{
+\text{Minimum Cost}=
+\min_{j\in S_{\text{all}}}
+(DP[S_{\text{all}}][j]+c(j,0))
+}
+\]
+
+The algorithm also stores the previous location for every state so that the complete optimal route can be reconstructed.
+6.3 – Implement the route optimisation engine
+Input cost matrix
+Consider one distribution hub and six delivery locations: A, B, C, D, E and F.
+
+The following is a symmetric travel-cost matrix. The diagonal values are zero because travelling from a location to itself has no cost.
+From / To	Hub	A	B	C	D	E	F
+Hub	0	10	15	20	18	25	12
+A	10	0	35	25	17	28	20
+B	15	35	0	30	22	19	26
+C	20	25	30	0	14	24	16
+D	18	17	22	14	0	16	21
+E	25	28	19	24	16	0	23
+F	12	20	26	16	21	23	0
+
+Python source code
+This program uses bitmask Dynamic Programming. It stores the minimum cost and previous location for each state, prints the DP states, reconstructs the route and measures execution time and memory.
+import itertoolsimport timeimport tracemalloc# Hub = 0, A = 1, B = 2, C = 3, D = 4, E = 5, F = 6names = ["Hub", "A", "B", "C", "D", "E", "F"]cost = [    [0, 10, 15, 20, 18, 25, 12],    [10, 0, 35, 25, 17, 28, 20],    [15, 35, 0, 30, 22, 19, 26],    [20, 25, 30, 0, 14, 24, 16],    [18, 17, 22, 14, 0, 16, 21],    [25, 28, 19, 16, 0, 23],    [12, 20, 26, 16, 21, 23, 0]]# Correct the E row to match the input matrixcost[5] = [25, 28, 19, 24, 16, 0, 23]def tsp_dp(cost, names, show_trace=True):    N = len(cost)    n = N - 1    if len(names) != N or any(len(row) != N for row in cost):        raise ValueError("Invalid cost matrix or location names")    if n < 1:        raise ValueError("At least one delivery location is required")    if any(cost[i][j] < 0 for i in range(N) for j in range(N)):        raise ValueError("Travel costs must be non-negative")
+
+
+
+Important correction before running: In the matrix above, the row for E is assigned again immediately afterward to ensure it matches the displayed matrix. You can simplify the program by directly using this correct row in the original matrix:
+[25, 28, 19, 24, 16, 0, 23]
+
+
+
+Expected result for the six-delivery-location dataset:
+OPTIMAL DELIVERY ROUTE
+
+Hub → B → E → D → C → F → A → Hub
+
+Minimum travel cost
+110
+
+192 DP states evaluated
+
+Route segment	Travel cost
+Hub → B	15
+B → E	19
+E → D	16
+D → C	14
+C → F	16
+F → A	20
+A → Hub	10
+Total	110
+
+The number of DP states is 192 because there are six delivery locations:
+\[
+n\times 2^{n-1}=6\times 2^5=192
+\]
+
+The code prints the intermediate states, including the visited subset, current location and minimum cost. Its execution time and peak memory are measured on the computer running it.
+6.4 – Validate the solution
+To check correctness independently, use a smaller problem containing the hub and four delivery locations: A, B, C and D.
+
+There are:
+\[
+4!=24
+\]
+
+possible delivery orders. We can examine all 24 routes using exhaustive enumeration and compare the best result with the DP result.
+Validation code
+Run this after defining tsp_dp and the original cost matrix.
+import itertools# Smaller matrix: Hub, A, B, C, Dsmall_cost = [row[:5] for row in cost[:5]]small_names = ["Hub", "A", "B", "C", "D"]# Dynamic Programming resultdp_cost, dp_route, dp_states = tsp_dp(    small_cost, small_names, show_trace=False)# Independent exhaustive enumerationbest_brute_cost = float("inf")best_brute_route = Nonefor order in itertools.permutations(range(1, 5)):    route = (0,) + order + (0,)    total = 0    for i in range(len(route) - 1):        total += small_cost[route[i]][route[i + 1]]    if total < best_brute_cost:        best_brute_cost = total        best_brute_route = routeprint("Exhaustive routes checked:", 24)print("Exhaustive minimum cost:", best_brute_cost)print(    "Exhaustive route:",    " -> ".join(small_names[i] for i in best_brute_route))print("DP minimum cost:", dp_cost)print(
+
+
+
+Expected validation output
+Exhaustive routes checked: 24
+Exhaustive minimum cost: 86
+Exhaustive route: Hub -> A -> C -> D -> B -> Hub
+
+DP minimum cost: 86
+DP route: Hub -> B -> D -> C -> A -> Hub
+
+VALIDATION SUCCESS
+
+
+The two routes are different, but both have the same minimum cost of 86.
+
+How does this increase confidence?
+
+Exhaustive enumeration checks every possible route for the smaller problem. Since the DP result has the same cost as the independently calculated optimum, it provides evidence that the DP recurrence and route reconstruction are working correctly. It does not prove correctness for every possible input, so additional test cases are still useful.
+6.5 – Investigate the state-space growth
+Dynamic Programming avoids calculating the same partial route repeatedly. However, it must still consider many different subsets of locations.
+
+For \(n\) delivery locations:
+- Number of DP states: \(n \times 2^{n-1}\)
+- Time complexity: \(O(n^2 2^n)\)
+- Space complexity: \(O(n 2^n)\)
+Benchmark code
+Use this additional code to test increasing numbers of delivery locations. It generates a symmetric cost matrix for each test size and measures DP states, execution time and peak memory.
+import timeimport tracemallocdef generate_matrix(n):    # n delivery locations + one hub    size = n + 1    matrix = []    for i in range(size):        row = []        for j in range(size):            if i == j:                row.append(0)            else:                a = min(i, j)                b = max(i, j)                value = 5 + ((a * 7 + b * 11 + a * b * 3) % 31)                row.append(value)        matrix.append(row)    return matrixprint("Locations | DP States | Time (ms) | Peak Memory (KB)")for n in range(4, 9):    test_matrix = generate_matrix(n)    test_names = ["Hub"] + [        "L" + str(i) for i in range(1, n + 1)    ]    tracemalloc.start()    start = time.perf_counter()
+
+
+
+Sample benchmark observations
+The following are example measurements from a Python run. Execution time and memory vary depending on the computer and Python environment.
+Delivery locations	DP states evaluated	Execution time (ms)	Peak memory (KB)
+4	32	0.187	3.0
+5	80	0.417	5.7
+6	192	0.464	22.9
+7	448	1.767	45.4
+8	1,024	6.277	100.2
+
+These measurements are illustrative, not guaranteed results on your computer. Use your own benchmark output for the final report.
+Interpretation
+As the number of locations increases, the number of possible subsets increases exponentially.
+
+For example:
+- 4 locations produce 32 DP states.
+- 6 locations produce 192 DP states.
+- 8 locations produce 1,024 DP states.
+Dynamic Programming eliminates repeated calculations by storing previously computed states. However, it still needs to process a large number of subsets and possible transitions between locations.
+
+Therefore, DP is much more efficient than checking every complete route, but it does not remove the exponential growth of the TSP problem.
+6.6 – Business requirement change
+The company now has 200 delivery locations and wants a good route within a few seconds. Management no longer requires a mathematically guaranteed optimal route.
+Why does exact DP become impractical?
+For 200 delivery locations, the number of DP states is:
+\[
+200\times 2^{199}\approx 1.6\times10^{62}
+\]
+
+This is an extremely large number of states. The time and memory requirements make exact DP impractical for this situation.
+What has changed?
+Earlier requirement:
+- Find the mathematically optimal route.
+- Guarantee the minimum possible travel cost.
+New requirement:
+- Generate a very good route within a few seconds.
+- An exact optimal answer is no longer compulsory.
+The business requirement has changed from exact optimisation to approximate optimisation.
+Proposed algorithmic strategy
+I would investigate a combination of:
+1. Nearest Neighbour: Start at the hub and repeatedly visit the nearest unvisited location.
+2. 2-opt improvement: Improve the initial route by exchanging pairs of edges to reduce the total travel cost.
+3. Multiple starting points: Run the heuristic from different starting locations and retain the best route found.
+These methods can produce good routes without exploring every possible combination.
+Trade-off
+Exact DP	Approximation / heuristic
+Guarantees the optimal route	Does not necessarily guarantee the optimum
+Exponential time and memory	Usually much faster in practice
+Becomes impractical for 200 locations	Can handle much larger instances
+Gives minimum possible cost	May produce a slightly higher cost
+
+Business decision: The company accepts the possibility of a higher travel cost in exchange for faster route generation and better scalability.
+6.7 – Technical reflection (not more than 150 words)
+Question: Dynamic Programming is more efficient than exhaustive enumeration for TSP. Why does this not mean that Dynamic Programming is scalable for every optimisation problem?
+
+Answer (105 words):
+
+Dynamic Programming improves TSP by storing previously calculated results and avoiding repeated computations. Exhaustive enumeration checks every possible route, whereas DP combines smaller subproblems using visited-location subsets. In my implementation, six delivery locations required 192 DP states, while eight locations required 1,024 states. This shows that the number of states increases rapidly as the number of locations grows. Although DP reduces repeated work, it still has exponential time complexity of \(O(n^2 2^n)\) and space complexity of \(O(n2^n)\). Therefore, DP is more efficient than exhaustive enumeration but is not suitable for every large optimisation problem.
+7. Boundary and failure testing
+Include these tests as additional evidence.
+Test	Input	Expected behaviour
+Normal case	Hub + 6 delivery locations	Return minimum-cost route
+Small case	Hub + 4 delivery locations	Match exhaustive enumeration
+Boundary case	Hub + 1 delivery location	Hub → A → Hub
+Invalid matrix	Matrix rows have different lengths	Display validation error
+Invalid cost	Negative travel cost	Display validation error
+
+Boundary test code
+one_location = [    [0, 10],    [10, 0]]print(tsp_dp(    one_location,    ["Hub", "A"],    show_trace=False))
+
+
+
+Expected result:
+Minimum travel cost: 20
+Optimal route: Hub -> A -> Hub
+DP states evaluated: 1
+
+
+Failure test code
+try:    tsp_dp(        [[0, 10], [10]],        ["Hub", "A"],        show_trace=False    )except ValueError as e:    print("Error:", e)try:    tsp_dp(        [[0, -5], [-5, 0]],        ["Hub", "A"],        show_trace=False    )except ValueError as e:    print("Error:", e)
+
+
+
+Expected output:
+Error: Invalid cost matrix or location names
+Error: Travel costs must be non-negative
+
+
+8. Final result
+The Travelling Salesperson Problem was implemented using Dynamic Programming and bitmask representation. The program calculated the minimum delivery cost, reconstructed the complete delivery route, displayed intermediate DP states and measured execution time and memory.
+
+For the six-delivery-location dataset, the optimal route was:
+
+Hub → B → E → D → C → F → A → Hub
+
+Minimum travel cost = 110
+
+The smaller instance was independently validated using exhaustive enumeration, and the benchmark demonstrated exponential state-space growth. For 200 delivery locations, heuristic methods such as Nearest Neighbour with 2-opt improvement are more appropriate when a good route is acceptable within a short time.
+9. Mandatory submission evidence checklist
+- [ ] Aim and problem model.
+- [ ] DP state definition, base condition and recurrence.
+- [ ] Complete Python source code.
+- [ ] Input cost matrix.
+- [ ] Intermediate DP states screenshot.
+- [ ] Final optimal route and minimum cost screenshot.
+- [ ] Four-location exhaustive validation screenshot.
+- [ ] Benchmark table for 4–8 delivery locations.
+- [ ] Boundary and failure test screenshots.
+- [ ] Business requirement change explanation.
+- [ ] Technical reflection within 150 words.
+Important: Use screenshots of your own actual VS Code or terminal execution for submission. Do not submit only the final minimum-cost screenshot; the intermediate states and validation are important evidence.
