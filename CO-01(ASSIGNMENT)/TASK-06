@@ -1,0 +1,143 @@
+TASK 6 – Formulate the Recurrence Relation
+3 Marks
+1. Recursive Approach: Binary Search
+The recursive algorithm selected in Task 1 is Recursive Binary Search. It follows the Divide and Conquer strategy to locate a given student registration number in a sorted list.
+2. Components of the Recurrence Relation
+1. Input size of the original problem
+
+Let \(n\) represent the total number of registration numbers in the sorted list.
+
+2. Size of the recursive subproblem
+
+Binary Search divides the list into two halves after comparing the target with the middle element.
+
+Therefore, the size of the next subproblem is:
+\[
+\frac{n}{2}
+\]
+
+3. Number of recursive calls
+
+At each step, Binary Search makes only one recursive call.
+- If the target is smaller than the middle element, search the left half.
+- If the target is greater than the middle element, search the right half.
+It does not search both halves.
+
+4. Work performed outside the recursive call
+
+Before making the recursive call, the algorithm performs:
+- Calculation of the middle index.
+- Comparison of the middle element with the target.
+- Decision to search the left or right half.
+These operations require constant time.
+
+Therefore:
+\[
+f(n)=c
+\]
+
+where c represents constant work.
+
+5. Base Case
+
+The recursion stops in either of these conditions:
+- The target registration number is found.
+- The search range becomes empty (low > high).
+For an empty search range:
+\[
+T(0)=c_0
+\]
+
+For a successful search at the middle:
+\[
+T(1)=c_1
+\]
+
+Both are constant-time base cases.
+
+3. Derivation of the Recurrence Relation
+From the algorithm behaviour:
+- Original input size = n
+- One recursive call = T(n/2)
+- Work outside recursive call = c
+Combining these components:
+\[
+\boxed{T(n)=T(n/2)+c}
+\]
+
+Base case:
+\[
+\boxed{T(1)=c_1}
+\]
+
+This is the recurrence relation for Recursive Binary Search.
+4. Expansion of the Recurrence
+Starting with:
+\[
+T(n)=T(n/2)+c
+\]
+
+Expanding once:
+\[
+T(n)=T(n/4)+2c
+\]
+
+Expanding again:
+\[
+T(n)=T(n/8)+3c
+\]
+
+After k steps:
+\[
+T(n)=T(n/2^k)+kc
+\]
+
+The recursion stops when:
+\[
+\frac{n}{2^k}=1
+\]
+
+Therefore:
+\[
+n=2^k
+\]
+
+Taking logarithms:
+\[
+k=\log_2 n
+\]
+
+Substituting:
+\[
+T(n)=T(1)+c\log_2 n
+\]
+
+Hence:
+\[
+\boxed{T(n)=\Theta(\log n)}
+\]
+
+5. Example
+Consider 16 registration numbers.
+Recursive step	Remaining elements
+Initial list	16
+First recursive call	8
+Second recursive call	4
+Third recursive call	2
+Fourth recursive call	1
+
+The list is divided into halves until the target is found or the search range becomes empty.
+
+Number of divisions:
+\[
+\log_2 16=4
+\]
+
+Therefore, Binary Search requires logarithmic time.
+6. Final Result
+The recurrence relation for Recursive Binary Search is:
+\[
+\boxed{T(n)=T(n/2)+c,\quad T(1)=c_1}
+\]
+
+It is derived from one recursive call on half of the input and constant work performed outside the recursive call. By expanding the recurrence, the time complexity is obtained as Θ(log n). This makes Recursive Binary Search efficient for locating registration numbers in large, sorted datasets.
