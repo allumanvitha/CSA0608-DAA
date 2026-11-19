@@ -1,0 +1,48 @@
+def binary_search_first(orders, target):
+
+    low = 0
+    high = len(orders) - 1
+
+    result = -1
+
+    while low <= high:
+
+        mid = (low + high) // 2
+
+        if orders[mid][0] == target:
+
+            result = mid
+            high = mid - 1
+
+        elif orders[mid][0] < target:
+
+            low = mid + 1
+
+        else:
+
+            high = mid - 1
+
+    return result
+
+
+orders = [
+    (101, "O4"),
+    (102, "O2"),
+    (102, "O5"),
+    (103, "O6"),
+    (105, "O1"),
+    (105, "O3")
+]
+
+target = int(input("Enter timestamp to search: "))
+
+position = binary_search_first(orders, target)
+
+if position != -1:
+
+    print("First matching order:", orders[position])
+    print("Position:", position)
+
+else:
+
+    print("Order not found")
