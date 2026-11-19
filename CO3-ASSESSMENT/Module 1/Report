@@ -1,0 +1,46 @@
+MODULE 1 – NIGHTLY ORDER CONSOLIDATION
+
+AIM To sort customer orders based on their timestamps using the Merge Sort algorithm while maintaining the original arrival order of orders having equal timestamps.
+
+PROBLEM DESCRIPTION In an online ordering platform, several customer orders may arrive at different times. The system must arrange all orders in ascending order of timestamps for generating audit reports.
+
+When two or more orders have the same timestamp, their original arrival order must be maintained. Therefore, a stable sorting algorithm is required.
+
+ALGORITHM USED Merge Sort
+Merge Sort is a divide-and-conquer sorting algorithm. It divides the given list into smaller parts, sorts them individually and combines them to produce a sorted list.
+
+It is a stable sorting algorithm.
+
+WORKING PRINCIPLE Merge Sort works using three main steps:
+
+Divide:
+
+Divide the given list into two equal halves. Continue dividing until each part contains only one element. 2. Conquer:
+
+Sort each smaller part recursively. 3. Combine:
+
+Compare the elements of both sorted halves. Merge them into a single sorted list. If timestamps are equal, select the element from the left half first to maintain stability. 5. SAMPLE INPUT Given orders:
+
+Timestamp Order ID 105 O1 102 O2 105 O3 101 O4 102 O5 103 O6 6. STEP-BY-STEP EXECUTION Step 1: Divide the orders
+
+[105, 102, 105, 101, 102, 103]
+
+Divide into:
+
+Left: [105, 102, 105]
+
+Right: [101, 102, 103]
+
+Step 2: Divide further
+
+Left side:
+
+[105] [102, 105] [102] [105] Right side:
+
+[101] [102, 103] [102] [103] Step 3: Merge the elements
+
+Left side:
+
+[102] + [105] = [102, 105] [105] + [102, 105] = [102, 105, 105] Right side:
+
+[102] + [103] = [102, 103
