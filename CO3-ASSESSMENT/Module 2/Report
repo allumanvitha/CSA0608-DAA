@@ -1,0 +1,70 @@
+[17, 8, 29]
+
+After sorting:
+
+[8, 17, 29]
+
+Step 4: Sort the right partition
+
+Right partition:
+
+[55, 63]
+
+After sorting:
+
+[55, 63]
+
+Step 5: Final sorted list
+
+[8, 17, 29, 42, 55, 63]
+
+SAMPLE OUTPUT Original Scores:
+[42, 17, 63, 8, 55, 29]
+
+Sorted Scores:
+
+[8, 17, 29, 42, 55, 63]
+
+TIME COMPLEXITY Case Time Complexity Best Case O(n log n) Average Case O(n log n) Worst Case O(n²) Explanation:
+Best Case: The pivot divides the array into nearly equal parts. Average Case: The partitions are reasonably balanced. Worst Case: The pivot repeatedly produces highly unbalanced partitions. 9. RECURRENCE RELATION Best Case:
+
+T(n) = 2T(n/2) + O(n)
+
+Using the Master Theorem:
+
+T(n) = O(n log n)
+
+Worst Case:
+
+T(n) = T(n-1) + O(n)
+
+Expanding:
+
+T(n) = T(n-2) + O(n-1) + O(n)
+
+T(n) = O(1 + 2 + 3 + ... + n)
+
+Therefore:
+
+T(n) = O(n²)
+
+IMPROVED PIVOT STRATEGY The existing implementation selects the first element as the pivot.
+This may produce unbalanced partitions when the data is already sorted or nearly sorted.
+
+To improve performance, Median-of-Three Pivot Selection is used.
+
+It selects the median of:
+
+First element Middle element Last element This strategy reduces the likelihood of unbalanced partitions and improves practical performance.
+
+However, it does not guarantee O(n log n) worst-case performance.
+
+SPACE COMPLEXITY Average Case: O(log n) Worst Case: O(n) Quick Sort requires memory for recursive function calls.
+A carefully implemented iterative version or recursion-depth protection can reduce the risk of excessive stack usage.
+
+ADVANTAGES Efficient for average-case sorting. Uses an in-place partitioning approach. Requires relatively little additional memory. Median-of-Three improves pivot selection. Suitable for frequently updated leaderboard data.
+DISADVANTAGES Worst-case time complexity is O(n²). Performance depends on pivot selection. Recursive calls may increase memory usage. It is not a stable sorting algorithm.
+RESULT Thus, the seller scores were successfully sorted in ascending order using Quick Sort with Median-of-Three Pivot Selection.
+The improved pivot strategy reduces the possibility of unbalanced partitions compared with always selecting the first element.
+
+Therefore, Quick Sort with an improved pivot strategy is a suitable choice for the Live Seller Leaderboard module.
