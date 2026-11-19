@@ -1,0 +1,43 @@
+ALGORITHM: MERGE SORT
+
+MERGE_SORT(A)
+
+1. If length of A <= 1
+       Return A
+
+2. Find the middle position:
+       mid = length(A) / 2
+
+3. Divide the array into two parts:
+       left = A[0 : mid]
+       right = A[mid : end]
+
+4. Recursively sort both parts:
+       left = MERGE_SORT(left)
+       right = MERGE_SORT(right)
+
+5. Merge both sorted parts:
+       Return MERGE(left, right)
+
+
+MERGE(left, right)
+
+1. Create an empty result list.
+2. Set i = 0 and j = 0.
+
+3. While i < length(left) AND j < length(right):
+
+       If left[i].timestamp <= right[j].timestamp:
+            Add left[i] to result
+            i = i + 1
+
+       Else:
+            Add right[j] to result
+            j = j + 1
+
+4. Add remaining elements of left to result.
+5. Add remaining elements of right to result.
+
+6. Return result.
+
+END
