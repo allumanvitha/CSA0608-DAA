@@ -1,0 +1,19 @@
+START
+INPUT list of tool IDs
+INPUT target tool ID
+comparisons = 0
+
+FOR each tool in the list
+    comparisons = comparisons + 1
+
+    IF tool == target
+        PRINT "Tool Found"
+        PRINT position
+        PRINT comparisons
+        STOP
+    END IF
+END FOR
+
+PRINT "Tool Not Found"
+PRINT comparisons
+STOP
