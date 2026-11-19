@@ -1,0 +1,37 @@
+def sort_alerts(alerts):
+    """
+    Sort security alerts by severity in descending order.
+    Maintains arrival order for equal severity alerts.
+    """
+
+    for i in range(1, len(alerts)):
+
+        key = alerts[i]
+        j = i - 1
+
+        while j >= 0 and alerts[j][1] < key[1]:
+
+            alerts[j + 1] = alerts[j]
+            j -= 1
+
+        alerts[j + 1] = key
+
+    return alerts
+
+
+# Main program
+alerts = [
+    ("A1", 3),
+    ("A2", 9),
+    ("A3", 5),
+    ("A4", 9),
+    ("A5", 1)
+]
+
+print("Original Alerts:")
+print(alerts)
+
+sorted_alerts = sort_alerts(alerts)
+
+print("\nSorted Alerts (Highest Severity First):")
+print(sorted_alerts)
