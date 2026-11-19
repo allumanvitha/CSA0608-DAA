@@ -1,0 +1,50 @@
+def merge(left, right):
+    result = []
+    i = 0
+    j = 0
+
+    while i < len(left) and j < len(right):
+
+        if left[i][0] <= right[j][0]:
+            result.append(left[i])
+            i += 1
+
+        else:
+            result.append(right[j])
+            j += 1
+
+    result.extend(left[i:])
+    result.extend(right[j:])
+
+    return result
+
+
+def merge_sort(orders):
+
+    if len(orders) <= 1:
+        return orders
+
+    mid = len(orders) // 2
+
+    left = merge_sort(orders[:mid])
+    right = merge_sort(orders[mid:])
+
+    return merge(left, right)
+
+
+orders = [
+    (105, "O1"),
+    (102, "O2"),
+    (105, "O3"),
+    (101, "O4"),
+    (102, "O5"),
+    (103, "O6")
+]
+
+print("Original Orders:")
+print(orders)
+
+sorted_orders = merge_sort(orders)
+
+print("\nSorted Orders:")
+print(sorted_orders)
