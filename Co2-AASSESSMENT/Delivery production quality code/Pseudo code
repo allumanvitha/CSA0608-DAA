@@ -1,0 +1,145 @@
+TASK (e) – PSEUDOCODE FOR PRODUCTION-QUALITY CODE
+1. Main Program
+BEGIN
+
+INITIALIZE alert list
+INITIALIZE blocklist
+INITIALIZE log and attack pattern
+INITIALIZE login events
+
+CALL sort_alerts(alerts)
+CALL is_blocked(blocklist, ip)
+CALL find_signature(log, pattern)
+CALL closest_logins(events)
+
+DISPLAY sorted alerts
+DISPLAY blocked IP result
+DISPLAY signature positions
+DISPLAY closest login pair and distance
+
+CALL test_harness()
+END
+
+2. Pseudocode for Alert Sorting
+BEGIN
+
+FOR i = 1 TO LENGTH(alerts) - 1
+
+    key = alerts[i]
+    j = i - 1
+
+    WHILE j >= 0 AND alerts[j].severity < key.severity
+
+        alerts[j + 1] = alerts[j]
+        j = j - 1
+
+    END WHILE
+
+    alerts[j + 1] = key
+
+END FOR
+
+RETURN alerts
+END
+
+3. Pseudocode for Blocklist Search
+BEGIN
+
+CREATE blocked_set FROM blocklist
+
+IF ip EXISTS IN blocked_set THEN
+    RETURN TRUE
+ELSE
+    RETURN FALSE
+END IF
+END
+
+4. Pseudocode for Signature Matching
+BEGIN
+
+n = LENGTH(log)
+m = LENGTH(pattern)
+INITIALIZE hits AS EMPTY LIST
+
+IF m = 0 THEN
+    RETURN hits
+END IF
+
+FOR i = 0 TO n - m
+
+    j = 0
+
+    WHILE j < m AND log[i + j] = pattern[j]
+        j = j + 1
+    END WHILE
+
+    IF j = m THEN
+        ADD i TO hits
+    END IF
+
+END FOR
+
+RETURN hits
+END
+
+5. Pseudocode for Closest Login Pair
+BEGIN
+
+IF LENGTH(events) < 2 THEN
+    RETURN NONE
+END IF
+
+min_dist_squared = INFINITY
+pair = NONE
+
+FOR i = 0 TO LENGTH(events) - 2
+
+    FOR j = i + 1 TO LENGTH(events) - 1
+
+        dx = events[i].x - events[j].x
+        dy = events[i].y - events[j].y
+
+        distance_squared = dx * dx + dy * dy
+
+        IF distance_squared < min_dist_squared THEN
+
+            min_dist_squared = distance_squared
+            pair = (i, j)
+
+        END IF
+
+    END FOR
+
+END FOR
+
+distance = SQRT(min_dist_squared)
+
+RETURN pair, distance
+END
+
+6. Pseudocode for Test Harness
+BEGIN
+
+TEST alert sorting with normal and equal severity values
+VERIFY alerts are sorted in descending order
+
+TEST blocklist search with existing and non-existing IP addresses
+TEST blocklist search with an empty blocklist
+
+TEST signature matching with normal patterns
+TEST pattern at the end of the log
+TEST pattern longer than the log
+TEST empty pattern
+
+TEST closest login pair with multiple events
+TEST closest login pair with fewer than two events
+
+VERIFY all expected outputs
+
+DISPLAY test results
+END
+
+7. Final Output
+DISPLAY "All functions executed successfully" DISPLAY "All test cases completed" DISPLAY "Optimised module is ready for production testing"
+
+END
