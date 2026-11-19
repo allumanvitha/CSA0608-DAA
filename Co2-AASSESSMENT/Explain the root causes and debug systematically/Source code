@@ -1,0 +1,30 @@
+def is_blocked(blocklist, ip):
+    """
+    Checks whether an IP address is present in the blocklist.
+    Returns True if the IP is blocked; otherwise, returns False.
+    """
+
+    for i in range(len(blocklist)):
+        if blocklist[i] == ip:
+            return True
+
+    return False
+
+
+# Test data
+blocklist = [
+    "10.0.0.5",
+    "10.0.0.9",
+    "172.16.4.2"
+]
+
+queries = [
+    "10.0.0.9",
+    "10.0.0.5",
+    "8.8.8.8"
+]
+
+# Test the function
+for ip in queries:
+    result = is_blocked(blocklist, ip)
+    print(ip, ":", result)
