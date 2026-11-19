@@ -1,0 +1,44 @@
+
+Q1 – Sorting Under Different Data Conditions
+
+Problem Context
+
+E-Commerce Order Processing
+
+Aim
+
+To implement Selection Sort, Bubble Sort and Insertion Sort and compare their performance under different input conditions.
+
+Algorithms Used
+
+Selection Sort
+Bubble Sort
+Insertion Sort
+Test Datasets
+
+Nearly sorted data
+Randomly ordered data
+Reverse sorted data
+Empty list
+Performance Measures
+
+Number of comparisons
+Number of swaps or movements
+Execution time
+Time Complexity
+
+Algorithm| Best Case| Average Case| Worst Case Selection Sort| O(n²)| O(n²)| O(n²) Bubble Sort| O(n)| O(n²)| O(n²) Insertion Sort| O(n)| O(n²)| O(n²)
+
+Observation
+
+Insertion Sort performs efficiently when the input is nearly sorted. Bubble Sort can stop early when the data is already sorted. Selection Sort performs approximately the same number of comparisons regardless of the input arrangement.
+
+Recommendation
+
+Insertion Sort is recommended for the given e-commerce scenario because approximately 95% of existing orders are already sorted and only small batches of new orders are added.
+
+Result
+
+The three sorting algorithms are implemented and compared using different datasets. The final recommendation should be supported by the operation counts obtained from program execution.
+
+FILE 3 content loaded
