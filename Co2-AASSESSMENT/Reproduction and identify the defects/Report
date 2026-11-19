@@ -1,0 +1,35 @@
+
+REPORT – SORT ALERTS USING INSERTION SORT Project: SentinelOps SOC Alert-Triage Module Course: CSA06 – Design and Analysis of Algorithms Assessment: CO2 – Debugging and Optimisation Task Part: A – Sorting Security Alerts
+
+Aim To identify and correct the errors in the insertion sort algorithm and arrange security alerts in descending order based on their severity while maintaining the original arrival order of alerts with equal severity. Problem Description The SentinelOps Security Operations Centre receives multiple security alerts with different severity levels. The alerts must be arranged from highest severity to lowest severity so that critical security incidents can be handled first. The original insertion sort program contains two defects that produce incorrect results. 3. Original Code Defects Faulty line Error Correction while j > 0 Does not compare the first element. while j >= 0 alerts[j] = key Inserts the key at the wrong position and overwrites data. alerts[j + 1] = key
+
+Corrected Algorithm Insertion sort is used to arrange the alerts based on severity. The algorithm compares each alert with the previous alerts and shifts lower-severity alerts to the right. The current alert is inserted into its correct position. 5. Pseudocode ALGORITHM SORT_ALERTS(alerts)
+
+FOR i = 1 TO LENGTH(alerts) - 1
+
+key = alerts[i]
+j = i - 1
+
+WHILE j >= 0 AND alerts[j].severity < key.severity
+
+    alerts[j + 1] = alerts[j]
+    j = j - 1
+
+END WHILE
+
+alerts[j + 1] = key
+END FOR
+
+RETURN alerts END ALGORITHM
+
+Python Source Code def sort_alerts(alerts): for i in range(1, len(alerts)): key = alerts[i] j = i - 1 while j >= 0 and alerts[j][1] < key[1]: alerts[j + 1] = alerts[j] j -= 1 alerts[j + 1] = key return alertsalerts = [ ("A1", 3), ("A2", 9), ("A3", 5), ("A4", 9), ("A5", 1)]print("Original Alerts:")print(alerts)print("\nSorted Alerts:")print(sort_alerts(alerts))
+
+Input and Output Input: A1 – Severity 3 A2 – Severity 9 A3 – Severity 5 A4 – Severity 9 A5 – Severity 1
+
+Expected output: A2 – Severity 9 A4 – Severity 9 A3 – Severity 5 A1 – Severity 3 A5 – Severity 1
+
+Complexity Analysis Case Time complexity Best case O(n) Average case O(n²) Worst case O(n²) Space complexity: O(1).
+
+Advantages Simple and easy-to-understand sorting technique. Maintains the arrival order of alerts with equal severity. Performs efficiently when the input data is nearly sorted. Requires very little additional memory.
+
+Deliver production -quality code content loaded
