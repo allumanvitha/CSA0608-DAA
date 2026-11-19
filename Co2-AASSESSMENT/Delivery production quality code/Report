@@ -1,0 +1,48 @@
+
+TASK (e) – DELIVER PRODUCTION-QUALITY CODE
+
+Introduction The SentinelOps SOC Alert-Triage Module is designed to manage security alerts efficiently. The main purpose of this task is to develop a corrected and optimised Python program with proper documentation and testing.
+The program contains four major functions: alert sorting, blocklist searching, attack signature matching and closest login location detection.
+
+Implementation of the Module The module is implemented using Python programming language. Each function is designed to perform a specific operation.
+Alert Sorting: Sorts security alerts according to severity in descending order. Alerts with equal severity maintain their original arrival order.
+
+Blocklist Searching: Checks whether an IP address is present in the blocked IP list. A Python set is used to improve repeated searching performance.
+
+Signature Matching: Searches for all occurrences of an attack signature in a log file and returns their starting positions.
+
+Closest Login Pair: Identifies the two login locations with the minimum distance using squared distance calculations.
+
+Code Documentation The Python program includes docstrings and meaningful comments to explain the purpose of each function.
+Function names clearly describe their operations. Comments explain important program steps. Docstrings describe the purpose and behaviour of functions. Variables use meaningful names for better understanding. This improves readability, maintainability and debugging.
+
+Test Harness Implementation A test harness is developed to verify the correctness of all four functions.
+The following test cases are included:
+
+Test Case Input / Condition Expected Result Alert Sorting Different severity values Descending order Equal Severity Two alerts with equal severity Original arrival order maintained Blocklist Search Existing IP address TRUE Blocklist Search Non-existing IP address FALSE Empty Blocklist Empty list FALSE Signature Matching Normal attack pattern All matching positions Signature at End Pattern at the end of log Final position identified Longer Pattern Pattern longer than log Empty result Empty Pattern Empty search pattern Empty result Closest Pair Multiple login locations Minimum-distance pair Empty Events No login events NONE Single Event Only one login event NONE 5. Expected Test Results The test harness checks the output of each function using assertion statements.
+
+Function Test Result Alert Sorting PASSED Blocklist Searching PASSED Signature Matching PASSED Closest Login Pair PASSED Expected final output:
+
+SENTINELOPS MODULE TESTING
+
+Test 1: Alert sorting PASSED
+
+Test 2: Blocklist search PASSED
+
+Test 3: Signature matching PASSED
+
+Test 4: Closest pair PASSED
+
+ALL TESTS PASSED SUCCESSFULLY!
+
+Code Quality and Optimisation The final program improves code quality through the following features:
+Corrected logical and boundary errors. Maintains stable sorting for equal severity values. Uses set-based searching for faster IP lookup. Identifies all attack signature occurrences. Avoids self-comparisons and repeated pairs. Reduces unnecessary square-root calculations. Handles empty inputs and boundary conditions. Uses meaningful comments and documentation. 7. GitHub Repository Submission The final Python source code is committed to a GitHub repository.
+
+The repository contains:
+
+Python source code. Test harness. Program documentation. Expected output. Test results. GitHub Link: ______________________________
+
+Conclusion The SentinelOps SOC Alert-Triage Module is corrected and optimised using Python. All four functions are tested using a test harness, including normal inputs and boundary conditions.
+The final implementation improves correctness, efficiency, readability and maintainability. The program is prepared for further production testing and integration into the SentinelOps security monitoring system.rrectness, efficiency, readability and maintainability. The program is prepared for further production testing and integration into the SentinelOps security monitoring system.
+
+Deliver production -quality code content loaded
