@@ -1,0 +1,31 @@
+ALGORITHM FIND_SIGNATURE(log, pattern)
+
+    n = LENGTH(log)
+    m = LENGTH(pattern)
+    hits = EMPTY LIST
+
+    IF m = 0 THEN
+        RETURN [0, 1, ..., n]
+    END IF
+
+    IF m > n THEN
+        RETURN hits
+    END IF
+
+    FOR i = 0 TO n - m
+
+        j = 0
+
+        WHILE j < m AND log[i + j] = pattern[j]
+            j = j + 1
+        END WHILE
+
+        IF j = m THEN
+            ADD i TO hits
+        END IF
+
+    END FOR
+
+    RETURN hits
+
+END ALGORITHM
