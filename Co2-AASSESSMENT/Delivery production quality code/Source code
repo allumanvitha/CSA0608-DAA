@@ -1,0 +1,165 @@
+import math
+
+
+# 1. SORT ALERTS BY SEVERITY
+def sort_alerts(alerts):
+    """
+    Sort alerts by severity in descending order.
+    Maintains arrival order for equal severity.
+    """
+    for i in range(1, len(alerts)):
+        key = alerts[i]
+        j = i - 1
+
+        while j >= 0 and alerts[j][1] < key[1]:
+            alerts[j + 1] = alerts[j]
+            j -= 1
+
+        alerts[j + 1] = key
+
+    return alerts
+
+
+# 2. CHECK BLOCKED IP ADDRESS
+def is_blocked(blocklist, ip):
+    """
+    Check whether an IP address exists in the blocklist.
+    """
+    blocked_set = set(blocklist)
+    return ip in blocked_set
+
+
+# 3. FIND ALL ATTACK SIGNATURES
+def find_signature(log, pattern):
+    """
+    Find all occurrences of a pattern in a log.
+    Returns starting positions of matches.
+    """
+    n = len(log)
+    m = len(pattern)
+    hits = []
+
+    if m == 0 or m > n:
+        return hits
+
+    for i in range(n - m + 1):
+        j = 0
+
+        while j < m and log[i + j] == pattern[j]:
+            j += 1
+
+        if j == m:
+            hits.append(i)
+
+    return hits
+
+
+# 4. FIND CLOSEST LOGIN LOCATIONS
+def closest_logins(events):
+    """
+    Find the pair of login locations with minimum distance.
+    Uses squared distance to avoid repeated square roots.
+    """
+    if len(events) < 2:
+        return None, None
+
+    min_dist_sq = float('inf')
+    pair = None
+
+    for i in range(len(events) - 1):
+        for j in range(i + 1, len(events)):
+
+            dx = events[i][0] - events[j][0]
+            dy = events[i][1] - events[j][1]
+
+            dist_sq = dx**2 + dy**2
+
+            if dist_sq < min_dist_sq:
+                min_dist_sq = dist_sq
+                pair = (i, j)
+
+    return pair, math.sqrt(min_dist_sq)
+
+
+# 5. TEST HARNESS
+def test_harness():
+
+    print("SENTINELOPS MODULE TESTING")
+    print("-" * 40)
+
+    # Test 1: Alert sorting
+    alerts = [
+        ("A1", 3),
+        ("A2", 9),
+        ("A3", 5),
+        ("A4", 9),
+        ("A5", 1)
+    ]
+
+    result = sort_alerts(alerts)
+
+    assert result == [
+        ("A2", 9),
+        ("A4", 9),
+        ("A3", 5),
+        ("A1", 3),
+        ("A5", 1)
+    ]
+
+    print("Test 1: Alert sorting PASSED")
+
+
+    # Test 2: Blocklist search
+    blocklist = [
+        "10.0.0.5",
+        "10.0.0.9",
+        "172.16.4.2"
+    ]
+
+    assert is_blocked(blocklist, "10.0.0.9") == True
+    assert is_blocked(blocklist, "8.8.8.8") == False
+    assert is_blocked([], "8.8.8.8") == False
+
+    print("Test 2: Blocklist search PASSED")
+
+
+    # Test 3: Signature matching
+    log = "FAILFAIXFAIL"
+    pattern = "FAIL"
+
+    assert find_signature(log, pattern) == [0, 8]
+    assert find_signature("ABCDEF", "DEF") == [3]
+    assert find_signature("ABC", "ABCDE") == []
+    assert find_signature("ABC", "") == []
+
+    print("Test 3: Signature matching PASSED")
+
+
+    # Test 4: Closest login pair
+    events = [
+        (2, 3),
+        (12, 30),
+        (40, 50),
+        (5, 1),
+        (12, 10),
+        (3, 4)
+    ]
+
+    pair, distance = closest_logins(events)
+
+    assert pair == (0, 5)
+    assert math.isclose(distance, math.sqrt(2))
+
+    assert closest_logins([]) == (None, None)
+    assert closest_logins([(2, 3)]) == (None, None)
+
+    print("Test 4: Closest pair PASSED")
+
+    print("-" * 40)
+    print("ALL TESTS PASSED SUCCESSFULLY!")
+
+
+# 6. MAIN PROGRAM
+if __name__ == "__main__":
+
+    test_harness()
