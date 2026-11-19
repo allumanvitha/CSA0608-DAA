@@ -1,0 +1,49 @@
+CSA0608-DAA
+Repository navigation
+Code
+Issues
+Pull requests
+CSA0608-DAA/CO 2/Q-3
+/FILE 1/
+192521079simats-create
+192521079simats-create
+3 weeks ago
+Name	Last commit date
+..
+README.md
+3 weeks ago
+README.md
+Q3 – Brute-Force String Matching
+
+Problem Context
+
+Cybersecurity Log Screening
+
+Aim
+
+To locate a pattern in a text using Brute-Force String Matching and measure character comparisons.
+
+Algorithm
+
+Read the text and pattern.
+Align the pattern with the text.
+Compare characters one by one.
+Record the position if all characters match.
+Shift the pattern by one position after a mismatch.
+Count the character comparisons.
+Time Complexity
+
+Best Case: O(n), for fixed-length patterns that fail quickly at each alignment.
+Worst Case: O(nm)
+Auxiliary Space: O(k), where k is the number of matches stored.
+Here, n is the text length and m is the pattern length.
+
+Observation
+
+Repeated characters can cause repeated partial matches and increase the number of character comparisons.
+
+Result
+
+Brute-Force String Matching is implemented and tested using three text-pattern pairs.
+
+Q-3 content loaded
