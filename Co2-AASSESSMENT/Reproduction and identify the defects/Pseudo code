@@ -1,0 +1,21 @@
+ALGORITHM SORT_ALERTS(alerts)
+
+    FOR i = 1 TO LENGTH(alerts) - 1
+
+        key = alerts[i]
+        j = i - 1
+
+        WHILE j >= 0 AND alerts[j].severity < key.severity
+
+            alerts[j + 1] = alerts[j]
+            j = j - 1
+
+        END WHILE
+
+        alerts[j + 1] = key
+
+    END FOR
+
+    RETURN alerts
+
+END ALGORITHM
