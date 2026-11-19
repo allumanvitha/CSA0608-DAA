@@ -1,0 +1,13 @@
+ALGORITHM IS_BLOCKED(blocklist, ip)
+
+    FOR i = 0 TO LENGTH(blocklist) - 1
+
+        IF blocklist[i] = ip THEN
+            RETURN TRUE
+        END IF
+
+    END FOR
+
+    RETURN FALSE
+
+END ALGORITHM
