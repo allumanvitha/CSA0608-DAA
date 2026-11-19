@@ -1,0 +1,38 @@
+def find_signature(log, pattern):
+    """
+    Finds all occurrences of an attack signature
+    in a given log using brute-force string matching.
+    """
+
+    n = len(log)
+    m = len(pattern)
+    hits = []
+
+    if m == 0:
+        return list(range(n + 1))
+
+    if m > n:
+        return hits
+
+    for i in range(n - m + 1):
+        j = 0
+
+        while j < m and log[i + j] == pattern[j]:
+            j += 1
+
+        if j == m:
+            hits.append(i)
+
+    return hits
+
+
+# Test data
+log = "FAILFAIXFAIL"
+pattern = "FAIL"
+
+# Display result
+result = find_signature(log, pattern)
+
+print("Log:", log)
+print("Pattern:", pattern)
+print("Matching Positions:", result)
