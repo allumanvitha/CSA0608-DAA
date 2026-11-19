@@ -1,0 +1,26 @@
+def karatsuba(x, y):
+    if x < 10 or y < 10:
+        return x * y
+
+    n = max(len(str(x)), len(str(y)))
+    m = n // 2
+
+    power = 10 ** m
+
+    a = x // power
+    b = x % power
+
+    c = y // power
+    d = y % power
+
+    ac = karatsuba(a, c)
+    bd = karatsuba(b, d)
+    abcd = karatsuba(a + b, c + d)
+
+    return ac * (power ** 2) + (abcd - ac - bd) * power + bd
+
+
+x = int(input())
+y = int(input())
+
+print("Product =", karatsuba(x, y))
