@@ -1,0 +1,88 @@
+
+MODULE 3 – ORDER LOOKUP
+
+AIM To search for a customer order using its timestamp from the sorted order list using the Binary Search algorithm and return the first matching order when multiple orders have the same timestamp.
+
+PROBLEM DESCRIPTION In an online ordering platform, customer-support staff need to find orders quickly using their timestamps.
+
+The consolidated order list produced by Module 1 is already sorted in ascending order.
+
+Several orders may have the same timestamp. Therefore, the system must identify and return the first order matching the given timestamp.
+
+Binary Search is selected because it efficiently searches sorted data.
+
+ALGORITHM USED Binary Search
+Binary Search is an efficient searching algorithm that repeatedly divides the search area into two halves.
+
+It compares the target value with the middle element and eliminates the unnecessary half.
+
+A modified Binary Search is used to find the first occurrence of a timestamp.
+
+WORKING PRINCIPLE Binary Search works using the following steps:
+
+Initialization:
+
+Set the low position to 0. Set the high position to the last index. 2. Find the Middle Element:
+
+Calculate the middle position using (low + high) // 2. 3. Comparison:
+
+If the middle timestamp equals the target, store its position and continue searching the left half. If the target is greater, search the right half. If the target is smaller, search the left half. 4. Result:
+
+Return the stored position. If no matching timestamp exists, return -1. 5. SAMPLE INPUT Sorted orders from Module 1:
+
+Timestamp Order ID 101 O4 102 O2 102 O5 103 O6 105 O1 105 O3 Target timestamp: 102
+
+STEP-BY-STEP EXECUTION Step 1: Initialization
+Low = 0
+
+High = 5
+
+Target = 102
+
+Step 2: First comparison
+
+Middle = (0 + 5) // 2 = 2
+
+Middle timestamp = 102
+
+The target is found at index 2.
+
+Store result = 2.
+
+Continue searching the left half to find the first occurrence.
+
+Step 3: Second comparison
+
+High = 1
+
+Low = 0
+
+Middle = (0 + 1) // 2 = 0
+
+Middle timestamp = 101
+
+Since 101 is smaller than 102, search the right half.
+
+Low = 1
+
+Step 4: Third comparison
+
+Middle = (1 + 1) // 2 = 1
+
+Middle timestamp = 102
+
+The target is found again.
+
+Update result = 1.
+
+Continue searching the left half.
+
+High = 0
+
+Now Low is greater than High, so the search stops.
+
+Final Result:
+
+First matching order is found at index 1.
+
+Order ID
