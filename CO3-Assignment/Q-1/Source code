@@ -1,0 +1,22 @@
+def find_max_min(a, low, high):
+    if low == high:
+        return a[low], a[low]
+
+    if high == low + 1:
+        return max(a[low], a[high]), min(a[low], a[high])
+
+    mid = (low + high) // 2
+
+    max1, min1 = find_max_min(a, low, mid)
+    max2, min2 = find_max_min(a, mid + 1, high)
+
+    return max(max1, max2), min(min1, min2)
+
+
+n = int(input())
+a = list(map(int, input().split()))
+
+maximum, minimum = find_max_min(a, 0, n - 1)
+
+print("Maximum =", maximum)
+print("Minimum =", minimum)
