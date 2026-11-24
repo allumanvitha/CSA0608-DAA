@@ -1,0 +1,215 @@
+TASK B2 – Engineer an Adversarial Input: Same Size, Very Different Search (5 Marks)
+Programming Language: Python
+1. Aim
+To design two graphs having the same number of vertices and the same number of available colours, but requiring different amounts of computational effort when solved using the backtracking graph colouring algorithm.
+
+The objective is to demonstrate that the structure of a graph can significantly affect the performance of a backtracking algorithm.
+2. Graph Design
+We create two graphs with:
+- Number of vertices = 10
+- Number of colours (M) = 2
+- Same backtracking algorithm.
+- Same original vertex input order.
+Graph A – Easy Graph
+Colourable
+- Contains 10 vertices.
+- Contains no edges.
+- Every vertex can be assigned either colour.
+- No conflicts occur.
+- The algorithm can find a solution immediately.
+
+
+
+
+
+
+
+
+monash.edu
+
+
+Expected colouring: All vertices receive colour 1.
+Graph B – Difficult Graph
+Not colourable
+- Contains 10 vertices.
+- First 7 vertices are isolated.
+- Last 3 vertices form a triangle.
+- Only 2 colours are available.
+- A triangle requires 3 different colours.
+Edges:
+- (8, 9)
+- (9, 10)
+- (8, 10)
+
+
+
+
+
+
+
+
+mdpi.com
+
+
+Why is Graph B difficult?
+
+The algorithm first assigns colours to seven isolated vertices. These vertices do not create conflicts.
+
+However, after exploring these assignments, it reaches the triangle. The triangle cannot be coloured using only two colours.
+
+Therefore, the algorithm must backtrack and try other assignments for the seven isolated vertices before it can conclude that no solution exists.
+3. Before Running – Predictions
+Before executing the program, we make the following predictions.
+Measurement	Graph A	Graph B
+Search nodes	Very low	Very high
+Backtracks	Zero	Very high
+Rejected branches	Zero	Many
+Final colouring	Exists	Does not exist
+
+Prediction: Graph B will require more search.
+
+Reasons:
+1. Graph A has no edges, so there are no conflicts.
+2. Graph B contains a triangle, which cannot be coloured using two colours.
+3. The seven isolated vertices are placed before the triangle.
+4. The algorithm explores many possible assignments before discovering the conflict.
+5. Backtracking occurs repeatedly because the triangle cannot be completed.
+4. Python Source Code
+Use the graph_coloring() function from Task B1 without changing its instrumentation.
+
+Add the following code below the existing function.
+# TASK B2 - ADVERSARIAL INPUTprint("\n========== GRAPH A: EASY GRAPH ==========")n = 10m = 2# Graph A: No edgesedges_A = []graph_coloring(n, edges_A, m, 1)print("\n========== GRAPH B: DIFFICULT GRAPH ==========")n = 10m = 2# First 7 vertices are isolated.# Last 3 vertices form a triangle.edges_B = [    (7, 8),    (8, 9),    (7, 9)]graph_coloring(n, edges_B, m, 1)
+
+
+
+Important: Use Version 1 (original input order) for this experiment. The purpose is to deliberately place the difficult triangle after seven isolated vertices.
+5. Measured Results
+After executing the program using the Version 1 strategy, the expected measurements are:
+Graph A – Easy Graph
+Solution found
+========== GRAPH A: EASY GRAPH ==========
+
+Version: 1
+
+Final Colouring:
+Vertex 1 : 1
+Vertex 2 : 1
+Vertex 3 : 1
+Vertex 4 : 1
+Vertex 5 : 1
+Vertex 6 : 1
+Vertex 7 : 1
+Vertex 8 : 1
+Vertex 9 : 1
+Vertex 10 : 1
+
+Search Nodes Visited: 11
+Candidate Assignments: 10
+Rejected Branches: 0
+Backtracks: 0
+Maximum Search Depth: 10
+
+
+Graph B – Difficult Graph
+No solution exists
+========== GRAPH B: DIFFICULT GRAPH ==========
+
+Version: 1
+
+No valid colouring exists.
+
+Search Nodes Visited: 767
+Candidate Assignments: 1534
+Rejected Branches: 768
+Backtracks: 766
+Maximum Search Depth: 9
+
+
+6. Performance Comparison
+Measurement	Graph A	Graph B
+Vertices	10	10
+Colours	2	2
+Search nodes	11	767
+Candidate assignments	10	1534
+Rejected branches	0	768
+Backtracks	0	766
+Maximum depth	10	9
+Solution	Yes	No
+
+Search Nodes Comparison
+Graph A vs Graph B
+Number of search nodes visited by the same backtracking algorithm.
+
+
+02505007501KGraph AGraph B
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Graph B visits approximately 69.7 times more search nodes than Graph A, even though both graphs have exactly 10 vertices and use 2 colours.
+7. Investigation and Explanation
+Why does input size alone fail to describe computational effort?
+Input size alone does not determine the execution time of a backtracking algorithm.
+
+The structure and connections between vertices also affect the amount of searching.
+- Graph A has no edges, so every colour assignment is valid.
+- Graph B contains a triangle, which creates a colouring conflict.
+- The algorithm must explore different assignments before identifying that no solution exists.
+- Therefore, Graph B requires more search nodes and backtracking operations.
+Which structural property caused additional search?
+The main reason is the placement of the conflicting triangle after seven isolated vertices.
+
+The seven isolated vertices allow the algorithm to explore many possible colour combinations without detecting any conflict.
+
+When the algorithm finally reaches the triangle, it discovers that two colours are insufficient.
+
+As a result, it must return to earlier vertices and try different assignments.
+Why does pruning occur later in Graph B?
+The feasibility test checks only whether the current vertex conflicts with an already coloured neighbour.
+
+The first seven vertices have no neighbours, so every assignment passes the feasibility test.
+
+The conflict becomes visible only when the algorithm reaches the triangle.
+
+This delayed conflict detection causes additional backtracking.
+8. Additional Investigation – Effect of Vertex Ordering
+An interesting observation can be made by running Graph B using Version 2 (highest-degree-first heuristic) from Task B1.
+
+The three triangle vertices have the highest degree, so the algorithm selects them first.
+
+Expected measurements:
+Measurement	Version 1	Version 2
+Search nodes	767	5
+Candidate assignments	1534	10
+Rejected branches	768	6
+Backtracks	766	4
+
+This demonstrates that a good vertex ordering can expose conflicts earlier and dramatically reduce unnecessary searching.
+9. Result
+The adversarial input experiment was successfully performed using two graphs having the same number of vertices and the same number of colours.
+
+Graph A required very little searching because it contained no edges. Graph B required significantly more searching because the triangle conflict was placed after seven isolated vertices.
+
+The experiment proves that the computational effort of a backtracking algorithm depends not only on input size but also on the structure of the input and the order in which decisions are made.
+10. Evidence to Include in Your Word Report
+Take these screenshots from VS Code:
+1. Graph A source code.
+2. Graph B source code.
+3. Graph A execution output.
+4. Graph B execution output.
+5. Performance comparison table.
+6. Version 2 execution (optional additional evidence).
+Final conclusion for your assignment:
+
+The experiment demonstrates that two graphs with identical input sizes can require very different computational effort. Graph B caused significantly more backtracking because its conflicting triangle was discovered only after exploring seven isolated vertices. Using a degree-based selection heuristic reduced the search by detecting the conflict earlier.
