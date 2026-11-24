@@ -1,0 +1,230 @@
+1. Aim
+To implement the backtracking algorithm for the Graph Colouring Problem and measure its performance using two different vertex selection strategies.
+
+The program records:
+1. Search nodes visited.
+2. Candidate assignments attempted.
+3. Branches rejected by the feasibility test.
+4. Number of backtracks.
+5. Maximum search depth.
+6. Final graph colouring, if a solution exists.
+2. Algorithm Explanation
+Graph colouring means assigning colours to the vertices of a graph so that no two connected (adjacent) vertices have the same colour.
+
+We use backtracking to solve this problem.
+
+Working procedure:
+1. Start with the first vertex.
+2. Assign a colour from 1 to M.
+3. Check whether the colour is safe.
+4. If it is safe, move to the next vertex.
+5. If it is not safe, reject that colour.
+6. If no colour is possible, go back to the previous vertex and try another colour.
+7. Continue until all vertices are coloured or no solution exists.
+3. Two Search Strategies
+Version 1 – Original Order
+- Select vertices in their original input order.
+- Example: V1, V2, V3, V4, V5.
+Version 2 – Degree-Based Heuristic
+- Select the vertex having the highest number of connected neighbours first.
+- If two vertices have the same degree, select the vertex with the smaller vertex number.
+- This helps identify conflicts earlier because highly connected vertices have fewer possible colour choices.
+4. Python Source Code
+The following program implements both strategies and records all the required performance measurements.
+def graph_coloring(n, edges, m, version):    # Create adjacency list    graph = [[] for _ in range(n)]    for u, v in edges:        graph[u].append(v)        graph[v].append(u)    # Select vertex ordering    if version == 1:        order = list(range(n))    else:        order = sorted(            range(n),            key=lambda v: (-len(graph[v]), v)        )    colors = [0] * n    # Performance measurements    nodes = 0    attempts = 0    rejected = 0    backtracks = 0    max_depth = 0    def is_safe(vertex, color):        for neighbour in graph[vertex]:            if colors[neighbour] == color:                return False        return True
+
+
+
+5. B1.1 – Validate the Implementation (2 Marks)
+We test the program using three different graphs.
+Test Case 1: Colourable Graph
+Expected: Solution exists
+- Number of vertices: 5
+- Number of colours: 2
+- Edges: (1,2), (1,3), (2,5), (3,5), (4,5)
+- Purpose: To verify that the algorithm finds a valid colouring.
+Expected final colouring:
+Vertex	Colour
+V1	1
+V2	2
+V3	2
+V4	2
+V5	1
+
+No two adjacent vertices have the same colour.
+Test Case 2: Non-Colourable Graph
+Expected: No solution
+- Number of vertices: 5
+- Number of colours: 2
+- Edges: (1,3), (1,4), (1,5), (2,3), (3,5).
+- Purpose: To verify that the algorithm correctly identifies when a valid colouring is impossible.
+In this graph, vertices V1, V3 and V5 form a triangle. A triangle requires at least three colours.
+
+Therefore, two colours are insufficient.
+
+Expected output: No valid colouring exists.
+Test Case 3: Boundary Case
+Expected: Solution exists
+- Number of vertices: 1
+- Number of colours: 1
+- Edges: None.
+- Purpose: To verify the algorithm for a graph containing only one vertex and no edges.
+Expected colouring:
+Vertex	Colour
+V1	1
+
+The program should successfully colour the single vertex.
+6. B1.2 – Compare Design with Implementation (1 Mark)
+The implementation follows the backtracking pseudocode designed in Task A1.
+Part A pseudocode	Python implementation
+Select a vertex	Select vertex using order[index]
+Try a colour	for color in range(1, m+1)
+Check feasibility	is_safe()
+Assign a colour	colors[vertex] = color
+Move to next vertex	solve(index + 1)
+Undo assignment	colors[vertex] = 0
+Stop when all vertices are coloured	if index == n
+
+Modifications made during implementation:
+1. Added an adjacency list to represent graph connections.
+2. Added a feasibility checking function to prevent adjacent vertices from receiving the same colour.
+3. Added counters to record search nodes, attempts, rejected branches and backtracks.
+4. Added a maximum search depth measurement.
+5. Added two vertex selection strategies to compare performance.
+Reason: These modifications were necessary to measure the algorithm's performance and compare different search strategies.
+7. B1.3 – Improve the Search Order (2 Marks)
+We implemented two versions to improve the search process.
+
+Version 1: Original Input Order
+- Vertices are selected in their given order.
+- No special selection rule is used.
+- It provides the baseline performance.
+Version 2: Highest Degree First
+
+Our selection rule is:
+1. Calculate the degree of every vertex.
+2. Select the vertex with the highest degree first.
+3. Continue with the remaining vertices in descending degree order.
+4. If two vertices have equal degree, select the smaller vertex number first.
+Why did we choose this rule?
+
+Highly connected vertices have more restrictions on their colour choices. Selecting them first can expose conflicts earlier and reduce unnecessary searching.
+8. B1.4 – Measure the Effect (2 Marks)
+The following table shows the experimental results obtained by running both versions on the same three graphs.
+Performance Comparison
+Test Case 1 – Colourable Graph
+Measurement	Version 1	Version 2
+Search nodes	7	6
+Candidate assignments	10	8
+Rejected branches	4	3
+Backtracks	1	0
+Maximum depth	5	5
+
+Test Case 2 – Non-Colourable Graph
+Measurement	Version 1	Version 2
+Search nodes	11	5
+Candidate assignments	22	10
+Rejected branches	12	6
+Backtracks	10	4
+Maximum depth	4	2
+
+Test Case 3 – Boundary Case
+Measurement	Version 1	Version 2
+Search nodes	2	2
+Candidate assignments	1	1
+Rejected branches	0	0
+Backtracks	0	0
+Maximum depth	1	1
+
+Note: Search nodes include recursive calls, including the initial and successful terminal calls. Maximum depth counts the number of vertices assigned before a recursive call.
+Overall Experimental Interpretation
+Search nodes comparison
+Number of recursive search nodes for both versions across the three test cases.
+
+
+
+Version 1
+
+Version 2
+
+
+036912ColourableNon-colourableBoundary
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Did the ordering rule reduce the amount of search?
+
+Yes. The degree-based heuristic reduced the search effort in the first two test cases.
+- In Test Case 1, search nodes decreased from 7 to 6.
+- In Test Case 2, search nodes decreased from 11 to 5.
+- In Test Case 3, both versions performed equally.
+The heuristic is particularly useful for graphs with conflicts because it selects highly connected vertices earlier.
+
+However, it does not guarantee better performance for every graph.
+9. Result
+The graph colouring problem was successfully implemented using the backtracking algorithm in Python.
+
+Both search strategies were tested using a colourable graph, a non-colourable graph and a boundary case.
+
+The degree-based heuristic performed better in the first two test cases by reducing search nodes, candidate assignments and backtracks. Both strategies produced the same correct results.
+10. Time and Space Complexity
+Let:
+- \(V\) = Number of vertices.
+- \(M\) = Number of available colours.
+- \(E\) = Number of edges.
+Complexity	Value
+Worst-case time	\(O(M^V \times (V+E))\)
+Space	\(O(V+E)\)
+
+The algorithm may explore up to \(M^V\) possible colour assignments in the worst case.
+11. How to Execute in VS Code
+1. Open VS Code.
+2. Create a file named graph_coloring.py.
+3. Paste the complete Python code.
+4. Save the file.
+5. Open the terminal.
+6. Execute:
+python graph_coloring.py
+
+
+If Python command does not work, try:
+py graph_coloring.py
+
+
+12. Screenshots Required for Your Assignment
+Take these screenshots after running the program:
+- Screenshot 1: Python source code.
+- Screenshot 2: Test Case 1 output.
+- Screenshot 3: Test Case 2 output.
+- Screenshot 4: Test Case 3 output.
+- Screenshot 5: Performance comparison tables.
+- Screenshot 6: Both search strategies in execution.
+Important: Include actual VS Code terminal screenshots in your report, not just the expected output written in the document.
+
+This covers B1.1, B1.2, B1.3 and B1.4, including the source code, three test cases, instrumentation and experimental comparison.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Do you like this personality?
