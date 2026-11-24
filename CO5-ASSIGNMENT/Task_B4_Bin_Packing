@@ -1,0 +1,232 @@
+TASK B4 – FINAL ENGINEERING DECISION: Bin Packing Under a Production Constraint (5 Marks)
+Programming Language: Python
+1. Aim
+To implement a practical bin packing algorithm that assigns computational workloads to identical-capacity servers while using as few servers as possible.
+
+The algorithm should:
+- Assign every workload to a server.
+- Never exceed server capacity.
+- Minimise the number of servers as much as possible.
+- Make placement decisions quickly.
+- Display server allocation and remaining capacity.
+2. Problem Description
+Imagine a cloud infrastructure system with multiple servers.
+
+Each server has a fixed capacity, and each workload requires a certain amount of resources.
+
+For example:
+- Server capacity = 10 units.
+- Workloads = 2, 5, 4, 7, 1, 3.
+- Each workload must be assigned to one server.
+- The total workload assigned to a server must not exceed 10.
+Our objective is to use the minimum possible number of servers.
+3. B4.1 – Implement a Practical Strategy (2 Marks)
+Selected Algorithm: First Fit Decreasing (FFD)
+We use the First Fit Decreasing algorithm.
+
+Selection and placement rule:
+1. Sort all workloads in decreasing order.
+2. Take the largest workload first.
+3. Check the servers one by one in the order they were created.
+4. Place the workload in the first server with enough remaining capacity.
+5. If no existing server has enough capacity, create a new server.
+6. Repeat until all workloads are assigned.
+Why choose First Fit Decreasing?
+- Simple to implement.
+- Fast for large workloads.
+- Uses less computational effort than exhaustive search.
+- Produces good practical allocations.
+
+
+
+
+
+
+
+
+daydreamsoft.com
+
+
+4. Python Source Code
+# TASK B4 - BIN PACKING USING FIRST FIT DECREASINGdef first_fit_decreasing(workloads, capacity):    # Sort workloads in descending order    sorted_workloads = sorted(workloads, reverse=True)    # Store servers and their allocated workloads    servers = []    # Count placement attempts    placement_attempts = 0    for workload in sorted_workloads:        placed = False        # Check existing servers        for server in servers:            placement_attempts += 1            if sum(server) + workload <= capacity:                server.append(workload)                placed = True                break        # Create a new server if required        if not placed:            servers.append([workload])    # Display output    print("\n========== BIN PACKING RESULT ==========")
+
+
+
+5. Expected Output
+Test Case 1 – Normal Input
+3 servers used
+Input:
+Workloads = [2, 5, 4, 7, 1, 3]
+Capacity = 10
+
+
+After decreasing-order sorting:
+
+[7, 5, 4, 3, 2, 1]
+
+Allocation:
+Server	Workloads	Used	Remaining
+Server 1	7, 3	10	0
+Server 2	5, 4, 1	10	0
+Server 3	2	2	8
+
+Output verified
+Number of Servers Used: 3
+
+Server 1: [7, 3]
+Used Capacity: 10
+Remaining Capacity: 0
+
+Server 2: [5, 4, 1]
+Used Capacity: 10
+Remaining Capacity: 0
+
+Server 3: [2]
+Used Capacity: 2
+Remaining Capacity: 8
+
+Placement Attempts: 8
+
+
+6. B4.2 – Challenge Your Strategy (1 Mark)
+To test the limitations of First Fit Decreasing, we design a challenging input.
+
+Server capacity: 10
+
+Workloads:
+
+[6, 5, 5, 4, 4, 4, 2]
+
+After sorting:
+
+[6, 5, 5, 4, 4, 4, 2]
+Greedy allocation
+Server	Workloads	Used capacity
+Server 1	6, 4	10
+Server 2	5, 4	9
+Server 3	5, 4	9
+Server 4	2	2
+
+4 servers required
+Exact optimal allocation
+A better arrangement is:
+Server	Workloads	Used capacity
+Server 1	6, 4	10
+Server 2	5, 5	10
+Server 3	4, 4, 2	10
+
+3 servers required
+Comparison
+\[
+\text{Greedy}=4
+\]
+
+\[
+\text{Optimal}=3
+\]
+
+\[
+4>3
+\]
+
+Why did the heuristic fail?
+
+The First Fit Decreasing algorithm placed workloads into the first available server.
+
+It placed the three workloads of size 6, 5 and 5 into separate servers. Later, the workloads of size 4 filled the remaining spaces.
+
+This left the final workload of size 2 requiring a fourth server.
+
+However, a different arrangement could have placed the two workloads of size 5 together and used only three servers.
+
+This demonstrates that First Fit Decreasing does not always produce the minimum number of servers.
+7. B4.3 – Production Decision (2 Marks)
+Algorithm Engineering Decision Note
+Selected algorithm: First Fit Decreasing (FFD)
+
+1. Why is exhaustive search unattractive at production scale?
+- Exhaustive search checks many possible workload combinations.
+- The number of combinations increases rapidly as workloads increase.
+- Production systems may receive thousands of workloads.
+- Searching every possible allocation can take too much time.
+2. What guarantee does the chosen strategy provide?
+- Every workload is assigned to a server.
+- No server exceeds its capacity.
+- The algorithm provides a valid allocation when every workload fits an individual server.
+- It does not guarantee the minimum number of servers.
+For First Fit Decreasing, a known worst-case approximation guarantee is:
+\[
+FFD \leq \frac{11}{9}OPT+\frac{6}{9}
+\]
+
+where OPT represents the minimum number of servers.
+
+3. What computational advantage does it provide?
+- Sorting workloads takes \(O(n\log n)\) time.
+- Server placement is straightforward.
+- It avoids exhaustive combination searching.
+- Its straightforward implementation takes at most \(O(n^2)\) time for placement.
+4. When is an exact approach appropriate?
+
+An exact approach is appropriate when:
+- The number of workloads is small.
+- Server allocation must be optimised precisely.
+- The cost of additional servers is very high.
+- There is sufficient time for computation.
+5. What evidence should be monitored before deployment?
+Monitoring factor	Purpose
+Number of servers	Check resource utilisation
+Remaining capacity	Identify unused resources
+Placement attempts	Measure computational effort
+Workload rejection	Check allocation failures
+Allocation time	Measure response speed
+Server overload	Ensure capacity is never exceeded
+
+8. Overall Comparison
+Feature	First Fit Decreasing	Exact Algorithm
+Speed	Fast	Slower
+Solution	Approximate	Optimal
+Large workloads	Suitable	Expensive
+Minimum servers guaranteed	No	Yes
+Computational effort	Lower	Higher
+
+9. Final Result
+The Bin Packing Problem was successfully implemented using the First Fit Decreasing algorithm.
+
+The program sorted workloads in descending order and allocated them to the first available server without exceeding its capacity.
+
+The challenging input demonstrated that the greedy algorithm used four servers, whereas an optimal allocation required only three servers.
+
+Therefore, First Fit Decreasing is a practical choice for production systems because it provides quick and valid workload allocation, although it does not always guarantee the minimum number of servers.
+10. Screenshots Required
+Assignment evidence checklist
+0/6
+
+[ ] Python source code
+[ ] Normal input execution
+[ ] Server allocation output
+[ ] Remaining server capacity output
+[ ] Challenging input execution
+[ ] Greedy versus optimal comparison
+
+Run in VS Code terminal:
+python bin_packing.py
+
+
+Save your code as bin_packing.py.
+
+Important: Use the actual terminal output as your execution evidence. The expected outputs above can be used to verify your results.
+
+
+
+
+
+
+
+
+
+
+
+
+As this conversation gets longer, ChatGPT may lose track of details from earlier in the chat. Upgrade for more context in every conversation.
+Upgrade to Plus
